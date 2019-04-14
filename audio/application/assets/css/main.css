@@ -1,0 +1,247 @@
+
+/*GENERAL*/
+
+:root {
+    --color-one: black;
+    --color-two: yellow;
+    --color-three:silver;
+    --color-four:rgb(99,99,99);
+    --color-five:rgb(38,38,38);
+    --color-six:rgb(78,206,144);
+    --color-seven:gainsboro;
+ 
+}
+*, *:before, *:after 
+{
+  
+  border:0px;
+  padding:0px;
+  margin:0px;
+  box-sizing: border-box;
+}
+
+*::-webkit-scrollbar 
+{
+	width: 0!important;
+	background-color:transparent!Important;
+	display:none!Important;
+}
+
+
+html,body
+{
+
+	font-weight: 100;
+	width:100%;
+	position:relative;
+	margin:0px;
+	padding:0px;  
+	font-size:1.0rem;
+	line-height:1.4rem;
+	-webkit-appearance: none;
+	height: 100%;
+	margin: 0;
+}
+
+
+
+
+
+/*///////////////////////////
+///HELPER////////////////*/
+
+
+div#window-status
+{
+	position:fixed;
+	top:10px;
+	left:5px;
+	background:black;
+	color:white;
+	z-index: 1000;
+	display:none;
+
+}
+
+
+div#search
+{
+	display:none;
+}
+
+
+/*///////////////////////////
+///FINDER////////////////*/
+
+div#finder
+{
+	position:relative;
+	background:black;
+	padding:5px;
+	color:white;
+	height:100vh;
+	width:100vw;
+}
+
+
+div#finder-error
+{
+	position:absolute;
+	z-index:2;
+	top:50%;
+	left:50%;
+	margin:-7px 0 0 -50px;
+	width:92px;
+	background:black;
+	color:white;
+	font-size:14px;
+	padding:3px;
+	display:none;
+}
+
+
+div#finder div#app-list
+{
+	background:black;
+	color:white;
+	margin:0 0 3px 0;
+	padding:3px;
+	max-height:90%;
+	min-width:95%;
+	overflow:hidden;
+}
+
+div#finder div#app-list div
+{
+	min-width:100%;
+}
+
+
+div#finder div#app-list div.dir
+{
+	background:silver;
+	color:black;
+}
+
+
+
+div#finder div:focus
+{
+	background:yellow;
+	color:black;
+	border:2px solid yellow;
+}
+
+
+
+
+
+div#finder div.playlist-item
+{
+	background:orange;
+	color:black;
+}
+
+div#finder div.active
+{
+	background:blue;
+	color:black;
+}
+
+
+div#finder div.button-bar
+{
+	padding:0 2px 0 0;
+	border-top:3px solid pink;
+	position: fixed;
+	bottom:0px!Important;
+	left:0px!Important;
+	z-index:5;
+	background:black;
+}
+
+
+
+/*///////////////////////////
+///MAN-PAGE////////////////*/
+
+
+div#man-page
+{
+  display:none;
+  position:absolute;
+  z-index:1000;
+  top:0;
+  background:black;
+  color:white;
+  font-size: 12px;
+  padding:5px 5px 50px 5px;
+  overflow-y:hidden; 
+  overflow-x:scroll;
+}
+
+div#man-page h1
+{
+  font-weight: 800;
+  margin:0 0 10px 0;
+  font-size:14px;
+  color:blue;
+
+}
+
+div#man-page h2
+{
+  color:blue;
+  font-size:12px;
+}
+
+div#man-page li div
+{
+ padding:0 0 0 10px;
+
+}
+
+
+div#man-page div#close
+{
+	background:black;
+	color:white;
+	font-size:14px;
+	padding:3px;
+	position:fixed;
+	bottom:0px;
+	left:5px;
+	min-width:100vw;
+}
+
+
+
+
+div#debugger
+{
+	display:none;
+	position:fixed;
+	top:10px;
+	left:10px;
+	width:80%;
+	height:20px;
+	background:pink;
+	color:black;
+}
+
+
+
+
+
+
+
+
+/* KaiOS portrait devices (240x320) */
+@media only screen and (orientation : portrait) {
+  /* styles */
+}
+
+/* KaiOS landscape devices (320x240) */
+@media screen and (orientation: landscape) {
+  /* styles */
+}

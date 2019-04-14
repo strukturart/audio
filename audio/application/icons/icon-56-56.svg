@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="56"
+   height="56"
+   viewBox="0 0 14.816666 14.816667"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="icon-56-56.svg"
+   inkscape:export-filename="/home/strukturart/Schreibtisch/icon-56-56.png"
+   inkscape:export-xdpi="95.162529"
+   inkscape:export-ydpi="95.162529">
+  <defs
+     id="defs2">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:menu-tooltip="Fades hue progressively to white"
+       inkscape:menu="Color"
+       inkscape:label="Hue to White"
+       id="filter842">
+      <feColorMatrix
+         values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 1 "
+         type="matrix"
+         result="r"
+         in="SourceGraphic"
+         id="feColorMatrix814" />
+      <feColorMatrix
+         values="0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 "
+         type="matrix"
+         result="g"
+         in="SourceGraphic"
+         id="feColorMatrix816" />
+      <feColorMatrix
+         values="0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 1 "
+         type="matrix"
+         result="b"
+         in="SourceGraphic"
+         id="feColorMatrix818" />
+      <feBlend
+         result="minrg"
+         in="r"
+         mode="darken"
+         in2="g"
+         id="feBlend820" />
+      <feBlend
+         result="p"
+         in="minrg"
+         mode="darken"
+         in2="b"
+         id="feBlend822" />
+      <feBlend
+         result="maxrg"
+         in="r"
+         mode="lighten"
+         in2="g"
+         id="feBlend824" />
+      <feBlend
+         result="q"
+         in="maxrg"
+         mode="lighten"
+         in2="b"
+         id="feBlend826" />
+      <feComponentTransfer
+         result="q2"
+         in="q"
+         id="feComponentTransfer830">
+        <feFuncR
+           slope="0"
+           type="linear"
+           id="feFuncR828" />
+      </feComponentTransfer>
+      <feBlend
+         result="pq"
+         in="p"
+         mode="lighten"
+         in2="q2"
+         id="feBlend832" />
+      <feColorMatrix
+         values="-1 1 0 0 0 -1 1 0 0 0 -1 1 0 0 0 0 0 0 0 1 "
+         type="matrix"
+         result="qminp"
+         in="pq"
+         id="feColorMatrix834" />
+      <feComposite
+         k3="1"
+         operator="arithmetic"
+         result="qminpc"
+         in="qminp"
+         in2="qminp"
+         id="feComposite836"
+         k1="0"
+         k2="0"
+         k4="0" />
+      <feBlend
+         result="result2"
+         in2="SourceGraphic"
+         mode="screen"
+         id="feBlend838" />
+      <feComposite
+         operator="in"
+         in="result2"
+         in2="SourceGraphic"
+         result="result1"
+         id="feComposite840" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#000000"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.2480728"
+     inkscape:cx="-54.607723"
+     inkscape:cy="36.720306"
+     inkscape:document-units="mm"
+     inkscape:current-layer="g834"
+     showgrid="false"
+     units="px"
+     showguides="false"
+     inkscape:window-width="1280"
+     inkscape:window-height="745"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:lockguides="true"
+     inkscape:pagecheckerboard="true"
+     inkscape:measure-start="0,0"
+     inkscape:measure-end="0,0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-282.18332)">
+    <g
+       id="g834"
+       transform="matrix(0.4879538,0,0,0.49563814,0.05742888,149.62046)">
+      <rect
+         style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect830"
+         width="9.6479139"
+         height="13.060208"
+         x="14.836573"
+         y="275.74438"
+         rx="0.22649123" />
+      <g
+         transform="translate(0.10376063,3.1750001)"
+         id="g1052" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path844"
+         d="m 5.8652242,290.06336 c -0.7479769,-0.18177 -1.4296219,-0.8818 -1.5863755,-1.62911 -0.032086,-0.15289 -0.04573,-1.55596 -0.04523,-4.6503 7.84e-4,-4.83959 -0.00371,-4.74146 0.240145,-5.22169 0.2161766,-0.42573 0.6313696,-0.76238 1.1438974,-0.92756 0.1243301,-0.04 0.8625644,-0.0604 2.9762006,-0.0824 2.2903153,-0.0236 2.8644413,-0.0407 3.1002083,-0.0924 0.865542,-0.18955 1.172952,-0.45375 2.118847,-1.82124 0.264959,-0.38308 0.566256,-0.76965 0.669548,-0.85907 0.24008,-0.20777 0.703295,-0.43766 0.989168,-0.49068 0.323468,-0.06 7.95129,-0.0556 8.238881,0.004 0.767253,0.1611 1.479593,0.87329 1.640531,1.64053 0.06491,0.30944 0.06491,12.19069 0,12.50011 -0.160951,0.76727 -0.873278,1.4796 -1.640531,1.64055 -0.328756,0.0689 -17.5599494,0.058 -17.8452899,-0.0111 z M 17.68987,288.0731 c 0.729784,-0.1271 1.408181,-0.57405 1.642594,-1.08181 l 0.09146,-0.19822 0.01129,-3.29523 0.01129,-3.29522 0.155325,-0.0418 c 0.08543,-0.0231 0.619785,-0.154 1.187458,-0.29117 0.567672,-0.13711 1.121249,-0.28986 1.230173,-0.33939 0.266884,-0.12133 0.533786,-0.41568 0.643923,-0.71005 0.08495,-0.22704 0.0888,-0.29633 0.0784,-1.40643 l -0.01089,-1.16764 -1.715447,0.34057 c -0.943499,0.18733 -1.799156,0.37057 -1.901463,0.40728 -0.259891,0.0931 -0.592271,0.32988 -0.717607,0.51103 -0.26649,0.3851 -0.252644,0.17577 -0.265256,4.00979 -0.01104,3.3572 -0.01424,3.48411 -0.08721,3.46095 -0.04166,-0.0133 -0.203914,-0.0511 -0.360561,-0.0844 -0.851672,-0.18044 -1.866383,0.0869 -2.416344,0.63705 -0.328632,0.32864 -0.429597,0.55301 -0.429597,0.95462 0,0.40163 0.100966,0.62598 0.429597,0.95464 0.41545,0.41544 1.120658,0.68383 1.826431,0.6951 0.127748,0.002 0.39618,-0.0249 0.596517,-0.0598 z"
+         style="fill:#df4300;fill-opacity:1;stroke-width:0.04133612" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "name": "Audio",
+  "description": "Audio Player",
+  "launch_path": "/index.html",
+  "type": "certified",
+
+
+  "icons": {
+    "56": "/icons/icon-56-56.png",
+    "112": "/icons/icon-112-112.png"
+  },
+	
+  "developer": {
+    "name": "strukturart",
+    "url": "https://strukturart.com"
+  },
+
+
+
+  "permissions": {
+
+  "systemXHR": {
+  "description": "Required to load remote content"
+  },
+
+  "device-storage:sdcard": {
+  "description": "Read from sd-card",
+  "access": "readonly"
+  },
+
+    "device-storage:music": {
+  "description": "Read from intern storage",
+  "access": "readonly"
+  },
+
+  "audio-channel-content": { "description": "Play music files in background" },
+
+
+	"spatialnavigation-app-manage": {
+	"navigator.spatialNavigationEnabled": false
+	}
+
+  }
+
+}
