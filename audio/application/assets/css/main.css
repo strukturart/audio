@@ -64,8 +64,17 @@ div#window-status
 }
 
 
-div#search
+
+
+div#podcast-message
 {
+	z-index:100;
+	background:yellow;
+	position:fixed;
+	color:black;
+	bottom:30px;
+	text-align:center;
+	padding:5px;
 	display:none;
 }
 

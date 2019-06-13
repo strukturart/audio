@@ -3,7 +3,7 @@
 <head>
 	
 	<title>Audio</title>
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://i.creativecommons.org/* ">
+	<meta http-equiv="Content-Security-Policy" content="default-src *; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'; img-src * data: 'unsafe-inline'; connect-src * 'unsafe-inline'; frame-src *;">
 
 
 
@@ -21,15 +21,15 @@
 
 
 
-<div id="search" class="width-100">
-	<input type="text" tabindex="0" class="items form-control search-dir" placeholder="Filtering Dir...">
+<div id="podcast-message" class="width-100">
+	
 </div>
 <div id="finder" class="flex width-100 height-100">
 	<div id="app-list" class="containerItems">
 
 	</div>
 	<div id="finder-error"></div>
-	<div class="button-bar flex width-100 justify-content-spacebetween"><div class="button-right">Pause</div><div id="time"></div><div class="button-left">Volume</div></div>
+	<div class="button-bar flex width-100 justify-content-spacebetween"><div class="button-left">Pause</div><div id="time"></div><div class="button-right">Volume</div></div>
 </div>
 
 <!--

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Audio",
   "description": "Audio Player",
   "launch_path": "/index.html",
@@ -17,21 +17,27 @@
   },
 
 
+"csp": "default-src *; script-src 'self'; connect-src *; media-src blob: *; style-src 'self' 'unsafe-inline'; img-src blob: *",
+
 
   "permissions": {
+  
+ 
+
+            "kaiosextension":{},                
 
   "systemXHR": {
   "description": "Required to load remote content"
   },
 
   "device-storage:sdcard": {
-  "description": "Read from sd-card",
-  "access": "readonly"
+  "description": "Read/Write from sd-card",
+  "access": "readwrite"
   },
 
-    "device-storage:music": {
+"device-storage:music": {
   "description": "Read from intern storage",
-  "access": "readonly"
+  "access": "readwrite"
   },
 
   "audio-channel-content": { "description": "Play music files in background" },

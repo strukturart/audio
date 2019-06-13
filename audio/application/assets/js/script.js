@@ -11,8 +11,8 @@ $(document).ready(function()
 
 	var status_player = "stop";
 	var volume = navigator.volumeManager;
-	var status = "default";
-	var debug = false;
+	var status = "player";//player, volume, podcast
+	var debug = true;
 	var lastDir = "";
 	var playlist = [];
 	var playlist_status = "";
@@ -24,8 +24,357 @@ $(document).ready(function()
 	player.preload="none";
 
 	var window_status = false;
+	var i = 0;
+	var podcast_url_list = [];
+	var podcast_file_list = [];
+	var podcast_download_path = "";
+	var download_done = "done";	
+	var download_counter = -1;
+	var podcast_action = false;
+
+	var episode_limit = 0;
+	var url_counter = -1;
+	var arr_file_name = [];
 
 
+
+
+///////////////////////////
+///PODCAST/////////////////
+///////////////////////////
+//READ URLS FROM SDCARD////
+///////////////////////////
+
+function read_json()
+{
+
+	status = "podcast"
+	
+	var finder = new Applait.Finder({ type: "sdcard", debugMode: true });
+	finder.search("audio.json");
+
+
+
+	finder.on("empty", function (needle) 
+	{
+		alert("no sdcard found");
+		return;
+	});
+
+	finder.on("searchComplete", function (needle, filematchcount) 
+	{
+		
+		if(filematchcount == 0)
+		{
+			alert("no markers.json file found");
+			return;
+		}
+	})
+
+	finder.on("fileFound", function (file, fileinfo, storageName) 
+	{
+		//file reader
+
+		var markers_file="";
+		var reader = new FileReader()
+
+
+		reader.onerror = function(event) 
+				{
+					alert('shit happens')
+					reader.abort();
+				};
+
+				reader.onloadend = function (event) 
+				{
+
+						markers_file = event.target.result
+						
+						//check if json valid
+						var printError = function(error, explicit) {
+						console.log("[${explicit ? 'EXPLICIT' : 'INEXPLICIT'}] ${error.name}: ${error.message}");
+						}
+
+						try {
+						} catch(e) {
+						if (e instanceof SyntaxError) {
+						alert("Json file is not valid");
+						return;
+						} else {
+
+						}
+
+						}
+
+
+							$("div#podcast-message").css("display","block");
+							$("div#podcast-message").text("Please wait")
+							$("div#finder div#app-list").css("display","none")
+							$("div#finder div.button-bar div.button-left").text("")
+							$("div#finder div.button-bar div.button-right").text("")
+
+
+
+								var data = JSON.parse(markers_file);
+
+							
+								$.each(data, function (index, value) {
+									
+									if(value.url)
+									{
+										podcast_url_list.push(value.url)
+										
+									}
+
+									if(value.download_path)
+									{
+										podcast_download_path = value.download_path;
+										if(podcast_download_path == "")
+											{
+												alert("none download path set")
+											}
+									}
+
+									
+								})
+								//start fetching meta data from podcast source
+								if(podcast_url_list.length > 0)
+								{
+									podcast_xml_fetcher(podcast_url_list[0])
+									
+
+								}
+
+								
+
+				};
+				reader.readAsText(file)
+			});
+
+
+}
+
+
+
+
+
+//////////////////////////////
+///PODCAST////////////////////
+//////////////////////////////
+//LOAD META DATA FROM URLS////
+/////////////////////////////
+
+
+
+
+
+
+
+
+function podcast_xml_fetcher(param_value)
+{
+
+	episode_limit = 0;
+
+	var xhttp = new XMLHttpRequest({ mozSystem: true });
+
+	xhttp.open('GET',param_value,true)
+	xhttp.withCredentials = true;
+	xhttp.responseType = 'document';
+	xhttp.overrideMimeType('text/xml');
+
+$("div#podcast-message").text("Please wait checking "+param_value)
+	
+
+
+	xhttp.onload = function () {
+		if (xhttp.readyState === xhttp.DONE && xhttp.status === 200) {
+
+	
+		var data = xhttp.response;
+
+
+		$(data).find('item').each(function(){
+
+
+			var podcast_url =  $(this).find('enclosure').attr('url')
+
+		
+				episode_limit++;
+					if(episode_limit==1)
+					{
+					
+
+						url_counter++;
+						//check if file exist in local storage
+						//only if not exist push in download list
+						
+
+						var dir = podcast_url.split('/');
+						var filename  = dir[dir.length-1];
+
+						var search_result = arr_file_name.indexOf(filename);
+
+						if(search_result == -1)
+						{
+							podcast_file_list.push(podcast_url)
+						}
+						
+						
+
+						if (url_counter < podcast_url_list.length)
+						
+						{
+
+							setTimeout(function () {
+							podcast_xml_fetcher(podcast_url_list[url_counter])
+							}, 4000);
+							
+						}
+						else
+						{
+							//ready to download podcasts
+							$("div#podcast-message").text("Do you want to download "+podcast_file_list.length+ "the new podcasts?")
+							$("div#finder div#app-list").css("display","none")
+							$("div#finder div.button-bar div.button-left").text("yes")
+							$("div#finder div.button-bar div.button-right").text("none")
+							if(podcast_file_list.length == 0)
+							{
+
+								$("div#podcast-message").text("No new podcasts to downloads")
+							$("div#finder div#app-list").css("display","none")
+							$("div#finder div.button-bar div.button-left").text("")
+							$("div#finder div.button-bar div.button-right").text("")
+
+
+								setTimeout(function () {
+							$("div#podcast-message").text("")
+							$("div#finder div#app-list").css("display","block")
+							$("div#podcast-message").css("display","block")
+							$("div#finder div.button-bar div.button-left").text("pause")
+							$("div#finder div.button-bar div.button-right").text("volume")
+
+							}, 4000);
+							
+							
+							}
+
+						}
+					}
+
+					else
+					{
+						return false;
+					}
+			
+			
+
+
+				})
+
+
+
+		}
+	};
+
+
+
+	xhttp.onerror = function () {
+	alert("error");
+	};
+
+	xhttp.send(null)
+
+}
+
+
+
+
+//////////////////////////////
+///PODCAST////////////////////
+//////////////////////////////
+//DOWNLOAD FILES/////////////
+/////////////////////////////
+
+
+
+function downloade_file(param_target_dir,param_url)
+{
+
+
+			var cmd = "cd "+param_target_dir+" && curl -kO "+param_url+";exit";
+
+
+
+			var extension = navigator.kaiosExtension || navigator.engmodeExtension;
+				if(extension)
+				{
+				alert(cmd)
+				download_done = "progress";
+
+
+				var executor = extension.startUniversalCommand(cmd, true); 
+				executor.onsuccess = function(e){
+					//alert('success')
+					download_done = "done";
+
+				};
+				executor.onerror = function(e){alert('command failed')};
+				}
+				else alert('no extension object available');
+				
+		}
+	
+
+
+
+
+
+
+
+
+function download_loop()
+{
+
+
+var watch_var = setInterval(check_var, 3000);
+
+function check_var() {
+
+	//alert(download_done)
+	if(download_done == "done" && download_counter <= podcast_file_list.length)
+	{
+		download_counter++
+		downloade_file(podcast_download_path,podcast_file_list[download_counter])
+	}
+	if(download_counter > podcast_file_list.length)
+	{
+		alert("downloads finished")
+		//stop interval
+		clearInterval(watch_var);
+
+		$("div#finder div#app-list").css("display","block")
+		$("div#finder div.button-bar div.button-left").text("pause")
+		$("div#finder div.button-bar div.button-right").text("volume")
+		$("div#podcast-message").css("display","none");
+		status = "player"
+		var finderNav_tabindex = 0;
+		finder()
+	}
+
+}
+
+
+
+}
+
+
+
+///////////////////
+///PLAYER/////////
+/////////////////
+//LIST FILES////
+///////////////
 
 
 
@@ -33,12 +382,17 @@ $(document).ready(function()
 
 function finder()
 {
+	finderNav_tabindex = -1;
+	status = "player";
+$("div#app-list").empty()
 var filelist = navigator.getDeviceStorages('sdcard');
 
 for(var i = 0; i< filelist.length; i++)
 {
 	// Let's browse all the images available
 	var cursor = filelist[i].enumerate();
+
+	
 
 	cursor.onsuccess = function () {
 	if(cursor.result.name !== null) {
@@ -60,7 +414,7 @@ for(var i = 0; i< filelist.length; i++)
 
 
 		var dir = str.split('/');
-		file_name = dir[dir.length-1];
+		var file_name = dir[dir.length-1];
 		source_dir = dir[2];
 		dir = dir[dir.length-2];
 
@@ -72,15 +426,18 @@ for(var i = 0; i< filelist.length; i++)
 			{
 			$("div#app-list").append('<div class="dir items-container">'+dir+'</div>');		
 			}
-			$("div#app-list").append('<div class="items" tabindex="'+finderNav_tabindex+'" data-search="'+rest+'" data-content="'+file_name+'">'+file_name+'</div>');		
+			$("div#app-list").append('<div class="items" tabindex="'+finderNav_tabindex+'" data-content="'+file_name+'">'+file_name+'</div>');		
 			lastDir = dir
+			arr_file_name.push(file_name)
+
 			}
+
+
 		
 
 		this.continue();
 		
 		$('body').find('div#finder div.items').first().focus()
-
 
 		}
 	}
@@ -97,10 +454,19 @@ for(var i = 0; i< filelist.length; i++)
 	}
 }
 
+finder();
 
 
-finder()
+////////////////////////
+//DELETE FILE
+/////////////////////////
 
+function delete_file()
+{
+			alert(arr_file_name.length)
+
+
+}
 
 
 ////////////////////////
@@ -110,11 +476,15 @@ finder()
 
 
 	function nav (move) {
-		if(status != "volume_control")
+		if(status == "player")
 		{
+			
+
 			var selected_button = $("div#finder div:focus")[0];
 			i = $(selected_button).attr("tabindex")
 			var items = document.querySelectorAll('.items');
+			$("div#debugger").text(i)
+			
 			if(move == "+1" && i < finderNav_tabindex)
 			{
 			i++
@@ -125,6 +495,7 @@ finder()
 				var targetElement = items[i];
 				targetElement.focus();
 				$("div#debugger").text(i)
+				
 
 			}
 			}
@@ -189,14 +560,8 @@ function play_sound()
 
 		finder.on("fileFound", function (file, fileinfo, storageName) {
 			var mysrc = URL.createObjectURL(file);
-				
-	
 			player.src =  mysrc;
-						player.play();
-
-
-
-
+			player.play();
 
 			//time duration
 			$(player).on("loadedmetadata", function(){
@@ -242,7 +607,7 @@ function play_sound()
 
 
 
-
+////SEEKING//////
 
 
 function seeking(param)
@@ -270,6 +635,17 @@ player.pause();
 
 
 
+function player_seeking_run()
+{
+	player.muted=true;
+	player.volume=0;
+}
+
+
+
+
+////PAUSE//////
+
 function pause_sound()
 {
 	if (player.paused && player.currentTime > 0 && !player.ended && window_status == flae) {
@@ -280,10 +656,15 @@ function pause_sound()
 }
 
 
+
+////VOLUME CONTROL//////
+
+
+
 function volume_control(param)
 {
 		
-		if(status == "volume_control")
+		if(status == "volume")
 	{
 
 
@@ -293,7 +674,8 @@ function volume_control(param)
 		volume.requestUp()
 
 		   setTimeout(function() {
-        status = "default";
+        status = "player";
+        alert(status)
     }, 2000);
 
 
@@ -306,7 +688,8 @@ function volume_control(param)
 	volume.requestDown()
 
 	setTimeout(function() {
-        status = "default";
+        status = "player";
+        alert(status)
     }, 2000);
 	}
 
@@ -315,6 +698,12 @@ function volume_control(param)
 
 
 }
+
+
+
+/////PLAYLIST/////
+
+
 
 
 function add_playlist()
@@ -393,6 +782,10 @@ if(playlist.length == 0)
 }
 
 
+
+//////MAN///////
+
+
 function show_man()
 {
 	$("div#man-page").css('display','block')
@@ -404,6 +797,14 @@ function close_man()
 	$("div#man-page").css('display','none')
 	window_status = false;
 }
+
+
+
+
+function  player_play_run()
+{}
+
+
 
 
 function player_ended()
@@ -428,17 +829,55 @@ function player_ended()
 }
 
 
-function player_play_run()
+
+
+
+
+function button_soft_right()
 {
+	if(status == "player")
+	{
+		status = "volume";
+		volume.requestShow();	
+	}
+
+	
+
+	if(status == "podcast")
+	{
+
+		$("div#finder div.button-bar div.button-left").text("pause")
+		$("div#finder div.button-bar div.button-right").text("volume")
+		$("div#podcast-message").css("display","none");
+		$("div#finder div#app-list").css("display","block")
+		status = "player"
+
+	}
 
 }
 
 
-function player_seeking_run()
+
+function button_soft_left()
 {
-	player.muted=true;
-	player.volume=0;
+	if(status == "player")
+	{
+		pause_sound();
+		close_man();
+	}
+
+	if(status == "podcast")
+	{
+		$("div#finder div.button-bar div.button-left").text("")
+		$("div#finder div.button-bar div.button-right").text("")
+		download_loop();
+		$("div#podcast-message").text("The files will now be downloaded. Please wait")
+	}
+
+
 }
+
+
 
 
 
@@ -483,6 +922,20 @@ function player_seeking_run()
 
 
 
+
+
+			case '6':
+			break;
+
+			case '7':
+			read_json()
+			break;
+
+
+			
+
+
+
 			case 'ArrowDown':
 				nav("+1")
 				volume_control("down");
@@ -496,6 +949,7 @@ function player_seeking_run()
 
 			case 'ArrowLeft':
 				seeking("backward");
+				delete_file();
 			break; 
 
 			case 'ArrowRight':
@@ -504,14 +958,12 @@ function player_seeking_run()
 
 
 			case 'SoftRight':
-				status = "volume_control";
-				volume.requestShow();
+				button_soft_right()
 
 			break;
 
 			case 'SoftLeft':
-				pause_sound();
-				close_man();
+				button_soft_left()
 			break;
  
 
@@ -555,3 +1007,72 @@ if(debug == true)
 
 
 
+//////TRASH MAYBE///
+/*
+
+function downloader2(param_file_name,param_target_dir,param_url)
+{
+ var search_file = param_file_name+".mp3"
+
+	var finder = new Applait.Finder({ type: "sdcard", debugMode: true });
+	finder.search(search_file);
+
+
+	finder.on("empty", function (needle) 
+	{
+		alert("no sdcard found");
+		return;
+	});
+
+	finder.on("searchComplete", function (needle, filematchcount) 
+	{
+		
+		if(filematchcount == 0)
+		{
+			alert("file not found")
+			var request2 = new XMLHttpRequest();
+			request2.open('GET', param_url,true);
+			request2.responseType = "blob";
+
+			request2.onloadstart = function () {
+			alert("Download underway");
+			};
+
+			request2.onload = function () {
+
+			//save file 
+			var sdcard = navigator.getDeviceStorages("sdcard");
+
+			var file_blob   = new Blob([request2.response], {type: "audio/mpeg"});
+			var request = sdcard[1].addNamed(file_blob,param_target_dir+"/"+param_file_name+".mp3");
+
+
+			request.onsuccess = function () {
+				var name = this.result;
+				alert('File "' + name + '" successfully wrote on the sdcard storage area');
+			}
+
+			request.onerror = function () {
+				alert('Unable to write the file: ' + this.error);
+			}
+
+			};
+
+			request2.send(null);
+			
+		}
+	})
+
+
+
+	finder.on("fileFound", function (file, fileinfo, storageName) 
+	{
+		alert("file already exist")
+	})
+
+
+
+}
+
+
+*/
