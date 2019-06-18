@@ -48,9 +48,9 @@ do a test before with adb shell!!
 
 ### to do
 
--download more episods
--delete files function
--solve curl https bug
+- download more episods
+- delete files function
+- add id3 tag-reader to create more readable file names
 
 ### Thank you
 https://tutorials.de and https://groups.google.com/forum/#!forum/bananahackers
