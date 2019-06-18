@@ -12,7 +12,7 @@ $(document).ready(function()
 	var status_player = "stop";
 	var volume = navigator.volumeManager;
 	var status = "player";//player, volume, podcast
-	var debug = true;
+	var debug = false;
 	var lastDir = "";
 	var playlist = [];
 	var playlist_status = "";
@@ -35,6 +35,7 @@ $(document).ready(function()
 	var episode_limit = 0;
 	var url_counter = -1;
 	var arr_file_name = [];
+
 
 
 
@@ -183,7 +184,7 @@ function podcast_xml_fetcher(param_value)
 	xhttp.responseType = 'document';
 	xhttp.overrideMimeType('text/xml');
 
-$("div#podcast-message").text("Please wait checking "+param_value)
+	$("div#podcast-message").text("Please wait checking "+param_value)
 	
 
 
@@ -215,46 +216,46 @@ $("div#podcast-message").text("Please wait checking "+param_value)
 
 						var search_result = arr_file_name.indexOf(filename);
 
-						if(search_result == -1)
+						if(search_result == -1 && podcast_url != "")
 						{
 							podcast_file_list.push(podcast_url)
 						}
 						
-						
-
 						if (url_counter < podcast_url_list.length)
 						
 						{
 
 							setTimeout(function () {
 							podcast_xml_fetcher(podcast_url_list[url_counter])
-							}, 4000);
+							}, 2000);
 							
 						}
 						else
 						{
 							//ready to download podcasts
-							$("div#podcast-message").text("Do you want to download "+podcast_file_list.length+ "the new podcasts?")
+							$("div#podcast-message").text("Do you want to download "+podcast_file_list.length+ " new podcasts?")
 							$("div#finder div#app-list").css("display","none")
 							$("div#finder div.button-bar div.button-left").text("yes")
 							$("div#finder div.button-bar div.button-right").text("none")
+							
+							//nothing to download
 							if(podcast_file_list.length == 0)
 							{
 
 								$("div#podcast-message").text("No new podcasts to downloads")
-							$("div#finder div#app-list").css("display","none")
-							$("div#finder div.button-bar div.button-left").text("")
-							$("div#finder div.button-bar div.button-right").text("")
+								$("div#finder div#app-list").css("display","none")
+								$("div#finder div.button-bar div.button-left").text("")
+								$("div#finder div.button-bar div.button-right").text("")
 
 
 								setTimeout(function () {
-							$("div#podcast-message").text("")
-							$("div#finder div#app-list").css("display","block")
-							$("div#podcast-message").css("display","block")
-							$("div#finder div.button-bar div.button-left").text("pause")
-							$("div#finder div.button-bar div.button-right").text("volume")
+								$("div#podcast-message").text("")
+								$("div#finder div#app-list").css("display","block")
+								$("div#podcast-message").css("display","none")
+								$("div#finder div.button-bar div.button-left").text("pause")
+								$("div#finder div.button-bar div.button-right").text("volume")
 
-							}, 4000);
+								}, 4000);
 							
 							
 							}
@@ -267,12 +268,8 @@ $("div#podcast-message").text("Please wait checking "+param_value)
 						return false;
 					}
 			
-			
-
 
 				})
-
-
 
 		}
 	};
@@ -295,6 +292,63 @@ $("div#podcast-message").text("Please wait checking "+param_value)
 //////////////////////////////
 //DOWNLOAD FILES/////////////
 /////////////////////////////
+		
+
+//////////////////
+///read curl output
+//to show progress
+//////////////////
+
+
+function read_log()
+{
+	var finder = new Applait.Finder({ type: "sdcard", debugMode: true });
+	finder.search("log.txt");
+
+
+
+	finder.on("empty", function (needle) 
+	{
+		alert("no log founded");
+		return;
+	});
+
+
+
+	finder.on("fileFound", function (file, fileinfo, storageName) 
+	{
+		//file reader
+
+		var markers_file="";
+		var reader = new FileReader()
+
+
+		reader.onerror = function(event) 
+				{
+					Logger.log('shit happens')
+					reader.abort();
+				};
+
+				reader.onloadend = function (event) 
+				{
+
+				var output = event.target.result;
+
+				var output_filter = output.split('#');
+						var last_output  = output_filter[output_filter.length-1];
+
+				//alert(event.target.result)
+				$("div#precent").text("")
+				$("div#precent").text(last_output)
+								
+
+				};
+				reader.readAsText(file)
+			});
+
+
+	
+}
 
 
 
@@ -302,24 +356,49 @@ function downloade_file(param_target_dir,param_url)
 {
 
 
-			var cmd = "cd "+param_target_dir+" && curl -kO "+param_url+";exit";
+			var cmd = "cd "+param_target_dir+" && curl -kOL --progress-bar "+param_url +"> /storage/sdcard/podcast/log.txt 2>&1" +";exit";
 
 
 
 			var extension = navigator.kaiosExtension || navigator.engmodeExtension;
 				if(extension)
 				{
-				alert(cmd)
+
+				//alert(cmd)
 				download_done = "progress";
+				$("div#download-progress div#download-count").text(download_counter+" / "+podcast_file_list.length)
 
 
 				var executor = extension.startUniversalCommand(cmd, true); 
+				var log_output = setInterval(check_log, 1000);
+
+				function check_log()
+				{
+					read_log()
+				}
+				
 				executor.onsuccess = function(e){
 					//alert('success')
+					clearInterval(log_output);
+
 					download_done = "done";
+					//show progress
+					if(download_counter < podcast_file_list.length)
+					{
+						$("div#download-progress div#download-count").text(download_counter+" / "+podcast_file_list.length)
+					}
+
 
 				};
-				executor.onerror = function(e){alert('command failed')};
+				executor.onerror = function(e){
+					alert('command failed')
+				};
+
+			
+
+
+				
+
 				}
 				else alert('no extension object available');
 				
@@ -327,36 +406,42 @@ function downloade_file(param_target_dir,param_url)
 	
 
 
-
-
-
-
-
-
 function download_loop()
 {
 
 
-var watch_var = setInterval(check_var, 3000);
+var watch_var = setInterval(check_var, 4000);
 
 function check_var() {
 
 	//alert(download_done)
-	if(download_done == "done" && download_counter <= podcast_file_list.length)
+	if(download_done == "done" && download_counter <= podcast_file_list.length && podcast_file_list[download_counter] != "")
 	{
 		download_counter++
 		downloade_file(podcast_download_path,podcast_file_list[download_counter])
+
+		$("div#download-progress").css("display","block")
+
+
 	}
 	if(download_counter > podcast_file_list.length)
 	{
-		alert("downloads finished")
+		//alert("downloads finished")
 		//stop interval
 		clearInterval(watch_var);
+		$("div#download-progress").css("display","none")
+		$("div#podcast-message").text("downloads done");
 
-		$("div#finder div#app-list").css("display","block")
-		$("div#finder div.button-bar div.button-left").text("pause")
-		$("div#finder div.button-bar div.button-right").text("volume")
-		$("div#podcast-message").css("display","none");
+		setTimeout(function () {
+								$("div#download-progress div#download-count").text("")
+								$("div#podcast-message").text("");
+								$("div#finder div#app-list").css("display","block")
+								$("div#finder div.button-bar div.button-left").text("pause")
+								$("div#finder div.button-bar div.button-right").text("volume")
+								$("div#podcast-message").css("display","none")
+								$('body').find('div#finder div.items').first().focus()
+
+								}, 4000);
 		status = "player"
 		var finderNav_tabindex = 0;
 		finder()
@@ -377,27 +462,28 @@ function check_var() {
 ///////////////
 
 
-
+	//https://github.com/aadsm/jsmediatags
+	var jsmediatags = window.jsmediatags;
 
 
 function finder()
 {
 	finderNav_tabindex = -1;
 	status = "player";
-$("div#app-list").empty()
-var filelist = navigator.getDeviceStorages('sdcard');
+	$("div#app-list").empty()
+	var filelist = navigator.getDeviceStorages('sdcard');
 
-for(var i = 0; i< filelist.length; i++)
-{
-	// Let's browse all the images available
+	for(var i = 0; i< filelist.length; i++)
+	{
 	var cursor = filelist[i].enumerate();
 
 	
 
 	cursor.onsuccess = function () {
-	if(cursor.result.name !== null) {
+	if(cursor.result) {
 	var file = cursor.result;
 
+	
 	// Once we found a file we check if there is other results
 	// Then we move to the next result, which call the cursor
 	// success with the next file as result.
@@ -418,8 +504,6 @@ for(var i = 0; i< filelist.length; i++)
 		source_dir = dir[2];
 		dir = dir[dir.length-2];
 
-
-
 		
 
 			if(lastDir != dir)
@@ -428,12 +512,26 @@ for(var i = 0; i< filelist.length; i++)
 			}
 			$("div#app-list").append('<div class="items" tabindex="'+finderNav_tabindex+'" data-content="'+file_name+'">'+file_name+'</div>');		
 			lastDir = dir
+			//push in array to compare later
 			arr_file_name.push(file_name)
 
 			}
 
+			var mysrc = URL.createObjectURL(file);
+			/*
+			if(mysrc)
+			{
 
-		
+jsmediatags.read(mysrc, {
+  onSuccess: function(tag) {
+    console.log(tag);
+  },
+  onError: function(error) {
+    alert(error);
+  }
+});
+		}
+		*/
 
 		this.continue();
 		
@@ -463,11 +561,34 @@ finder();
 
 function delete_file()
 {
-			alert(arr_file_name.length)
+			var sdcard = navigator.getDeviceStorages('sdcard');
+
+			for (var i = 0; i < sdcard.length;i++)
+			{
 
 
+var cursor = sdcard[i].enumerate();
+cursor.onsuccess = function () {
+
+	var request = sdcard[1].delete("Vergebung.mp3");
+
+	request.onsuccess = function () {
+	  alert("File deleted");
+	}
+
+	request.onerror = function () {
+	  alert("Unable to delete the file: " + this.error);
+	}
+  // Once we found a file we check if there is other results
+  if (!this.done) {
+    // Then we move to the next result, which call the
+    // cursor success with the next file as result.
+    this.continue();
+  }
+}
 }
 
+}
 
 ////////////////////////
 //NAVIGATION
@@ -673,10 +794,9 @@ function volume_control(param)
 	{
 		volume.requestUp()
 
-		   setTimeout(function() {
-        status = "player";
-        alert(status)
-    }, 2000);
+		setTimeout(function() {
+		status = "player";
+	}, 2000);
 
 
 	}
@@ -688,9 +808,8 @@ function volume_control(param)
 	volume.requestDown()
 
 	setTimeout(function() {
-        status = "player";
-        alert(status)
-    }, 2000);
+	status = "player";
+	}, 2000);
 	}
 
 }
@@ -871,7 +990,9 @@ function button_soft_left()
 		$("div#finder div.button-bar div.button-left").text("")
 		$("div#finder div.button-bar div.button-right").text("")
 		download_loop();
+		
 		$("div#podcast-message").text("The files will now be downloaded. Please wait")
+		//downloade_file2("podcast",podcast_file_list[0],"test"+download_counter+".mp3")
 	}
 
 
@@ -1004,75 +1125,109 @@ if(debug == true)
 
 
 
-
-
-
-//////TRASH MAYBE///
+////////////////////
+///////////////////
+//MAYBE TRASH//////
 /*
-
-function downloader2(param_file_name,param_target_dir,param_url)
+function downloade_file2(param_target_dir,param_url,param_file_name)
 {
- var search_file = param_file_name+".mp3"
+	download_counter++
+	alert(podcast_file_list[0])
 
-	var finder = new Applait.Finder({ type: "sdcard", debugMode: true });
-	finder.search(search_file);
+			$("div#download-progress").css("display","block")
+
+			$("div#download-progress").text(download_counter+" / "+podcast_file_list.length)
 
 
-	finder.on("empty", function (needle) 
-	{
-		alert("no sdcard found");
-		return;
-	});
+			var request2 = new XMLHttpRequest({ mozSystem: true });
 
-	finder.on("searchComplete", function (needle, filematchcount) 
-	{
-		
-		if(filematchcount == 0)
-		{
-			alert("file not found")
-			var request2 = new XMLHttpRequest();
+
+			//request2.addEventListener("progress", updateProgress);
+			request2.addEventListener("load", transferComplete);
+			request2.addEventListener("error", transferFailed);
+			//request2.addEventListener("abort", transferCanceled);
+
+			function transferFailed(evt)
+			{
+				alert("transfer failed")
+			}
+
+			function transferComplete(evt)
+			{
+				//alert("transfer finished")
+				if(download_counter <= podcast_file_list.length)
+				{
+				downloade_file2("podcast",podcast_file_list[download_counter],"test"+download_counter+".mp3")
+				}
+				if(download_counter > podcast_file_list.length)
+				{
+
+				$("div#download-progress").css("display","none")
+				$("div#podcast-message").text("downloads done");
+
+				setTimeout(function () {
+										$("div#download-progress").text("")
+										$("div#podcast-message").text("");
+										$("div#finder div#app-list").css("display","block")
+										$("div#finder div.button-bar div.button-left").text("pause")
+										$("div#finder div.button-bar div.button-right").text("volume")
+										$("div#podcast-message").css("display","none")
+										$('body').find('div#finder div.items').first().focus()
+
+
+										}, 4000);
+				status = "player"
+
+				}
+
+			}
+
+
 			request2.open('GET', param_url,true);
-			request2.responseType = "blob";
+			request2.responseType = "arraybuffer";
+
+
+
 
 			request2.onloadstart = function () {
-			alert("Download underway");
+				//alert("Download underway");
 			};
 
 			request2.onload = function () {
+				//$("div#download-progress").text(download_counter+1+" / "+podcast_file_list.length)
 
-			//save file 
-			var sdcard = navigator.getDeviceStorages("sdcard");
+/*
+				//save file 
+				var sdcard = navigator.getDeviceStorages("sdcard");
 
-			var file_blob   = new Blob([request2.response], {type: "audio/mpeg"});
-			var request = sdcard[1].addNamed(file_blob,param_target_dir+"/"+param_file_name+".mp3");
+				var file_blob   = new Blob([request2.response], {type: "audio/mpeg"});
+				var request = sdcard[1].addNamed(file_blob,param_target_dir+"/"+param_file_name);
 
+				request.onsuccess = function () {
+					var name = this.result;
+					alert('File "' + name + '" successfully wrote on the sdcard storage area');
+					if(download_counter < podcast_file_list.length)
+					{
+						$("div#download-progress").text(download_counter+1+" / "+podcast_file_list.length)
+						downloade_file2("podcast",podcast_file_list[download_counter],"test"+download_counter+".mp3")
 
-			request.onsuccess = function () {
-				var name = this.result;
-				alert('File "' + name + '" successfully wrote on the sdcard storage area');
-			}
+					}
 
-			request.onerror = function () {
-				alert('Unable to write the file: ' + this.error);
-			}
+				}
+
+				request.onerror = function () {
+					alert('Unable to write the file: ' + this.error);
+					download_counter++
+					downloade_file2("podcast",podcast_file_list[download_counter],"test"+download_counter+".mp3")
+
+				}
+				
 
 			};
 
+
 			request2.send(null);
-			
-		}
-	})
-
-
-
-	finder.on("fileFound", function (file, fileinfo, storageName) 
-	{
-		alert("file already exist")
-	})
-
-
 
 }
-
 
 */

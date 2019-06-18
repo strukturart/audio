@@ -78,6 +78,19 @@ div#podcast-message
 	display:none;
 }
 
+div#download-progress
+{
+	z-index:100;
+	background:yellow;
+	position:fixed;
+	color:black;
+	top:10px;
+	text-align:center;
+	padding:5px;
+	display:none;
+	
+}
+
 
 /*///////////////////////////
 ///FINDER////////////////*/
