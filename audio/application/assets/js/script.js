@@ -167,14 +167,7 @@ function read_json()
 ///PODCAST////////////////////
 //////////////////////////////
 //LOAD META DATA FROM URLS////
-/////////////////////////////
-
-
-
-
-
-
-
+//////////////////////////////
 
 function podcast_xml_fetcher(param_value)
 {
@@ -361,7 +354,7 @@ function downloade_file(param_target_dir,param_url)
 
 
 			var cmd = "cd "+param_target_dir+" && curl -kOL --progress-bar "+param_url +"> /storage/sdcard/podcast/log.txt 2>&1" +";exit";
-
+			//var cmd = "cd "+param_target_dir+" && curl -kOLv "+param_url +">> /storage/sdcard/podcast/log.txt 2>&1" +";exit";
 
 
 			var extension = navigator.kaiosExtension || navigator.engmodeExtension;
@@ -1085,7 +1078,6 @@ function handleKeyUp(evt) {
 
 		case 'ArrowLeft':
 			seeking("backward");
-			delete_file();
 		break; 
 
 		case 'ArrowRight':

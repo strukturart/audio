@@ -7,6 +7,7 @@ audio player and podcast downloader
 ### Manual
 + **Cursor up/down** file navigation 
 + **Enter** play selected file
++ **Enter long press** delete selected file
 + **Soft-key-left** pause
 + **Soft-key-right** volume
 + **key 1** add selected file to playlist
@@ -16,6 +17,7 @@ audio player and podcast downloader
 + **key 0** open man page
 + **key 7** download podcasts
 
+### Podcast downloader
 Put on your sd card a file with the name audio.json with the following structure:
 
 
@@ -49,7 +51,6 @@ do a test before with adb shell!!
 ### to do
 
 - download more episods
-- delete files function
 - add id3 tag-reader to create more readable file names
 
 ### Thank you
