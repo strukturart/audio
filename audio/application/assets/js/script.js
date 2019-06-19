@@ -37,6 +37,10 @@ $(document).ready(function()
 	var arr_file_name = [];
 
 
+	///long click
+	var start = 0;
+
+
 
 
 
@@ -325,7 +329,7 @@ function read_log()
 
 		reader.onerror = function(event) 
 				{
-					Logger.log('shit happens')
+					console.log('shit happens')
 					reader.abort();
 				};
 
@@ -335,7 +339,7 @@ function read_log()
 				var output = event.target.result;
 
 				var output_filter = output.split('#');
-						var last_output  = output_filter[output_filter.length-1];
+				var last_output  = output_filter[output_filter.length-1];
 
 				//alert(event.target.result)
 				$("div#precent").text("")
@@ -510,7 +514,7 @@ function finder()
 			{
 			$("div#app-list").append('<div class="dir items-container">'+dir+'</div>');		
 			}
-			$("div#app-list").append('<div class="items" tabindex="'+finderNav_tabindex+'" data-content="'+file_name+'">'+file_name+'</div>');		
+			$("div#app-list").append('<div class="items" tabindex="'+finderNav_tabindex+'" data-file-url="'+str+'" data-content="'+file_name+'">'+file_name+'</div>');		
 			lastDir = dir
 			//push in array to compare later
 			arr_file_name.push(file_name)
@@ -561,32 +565,27 @@ finder();
 
 function delete_file()
 {
-			var sdcard = navigator.getDeviceStorages('sdcard');
 
-			for (var i = 0; i < sdcard.length;i++)
-			{
+	var selected_button = $("div#finder div:focus")[0];
+	var file_name = $(selected_button).attr("data-file-url")
 
 
-var cursor = sdcard[i].enumerate();
-cursor.onsuccess = function () {
+	var sdcard = navigator.getDeviceStorages('sdcard');
 
-	var request = sdcard[1].delete("Vergebung.mp3");
+	var request = sdcard[1].delete(file_name);
+
 
 	request.onsuccess = function () {
-	  alert("File deleted");
+		alert("File deleted");
+		finder()
+		return;
+
 	}
 
 	request.onerror = function () {
 	  alert("Unable to delete the file: " + this.error);
 	}
-  // Once we found a file we check if there is other results
-  if (!this.done) {
-    // Then we move to the next result, which call the
-    // cursor success with the next file as result.
-    this.continue();
-  }
-}
-}
+
 
 }
 
@@ -667,6 +666,7 @@ function play_sound()
 
 
 {
+	
 	player.src =  "";
 
 	$("div#time").css("opacity","0")
@@ -721,7 +721,8 @@ function play_sound()
 
 				})
 
-		}
+		
+	}
 
 }
 
@@ -1001,100 +1002,120 @@ function button_soft_left()
 
 
 
-
-
 	//////////////////////////
 	////KEYPAD TRIGGER////////////
 	/////////////////////////
 
+function handleKeyDown(evt) 
 
+{	
 
-	function handleKeyDown(evt) {
-
-
-			switch (evt.key) {
-
-
-	        case 'Enter':
-	        play_sound()
-	        break;
-
-
-			case '0':
-			show_man()
-			break
-
-			case '1':
-			add_playlist()
-			break
-
-			case '4':
-			play_playlist(0)
-			break
-
-			case '2':
-			nav_dirs("up")
-			break
-
-
-			case '5':
-			nav_dirs("down")
-			break;
-
-
-
-
-
-			case '6':
-			break;
-
-			case '7':
-			read_json()
-			break;
-
-
-			
-
-
-
-			case 'ArrowDown':
-				nav("+1")
-				volume_control("down");
-			break; 
-
-
-			case 'ArrowUp':
-				nav("-1")
-				volume_control("up");
-			break; 
-
-			case 'ArrowLeft':
-				seeking("backward");
-				delete_file();
-			break; 
-
-			case 'ArrowRight':
-				seeking("forward")
-			break; 
-
-
-			case 'SoftRight':
-				button_soft_right()
-
-			break;
-
-			case 'SoftLeft':
-				button_soft_left()
-			break;
- 
-
+	switch (evt.key) 
+	{
+		case 'Enter':
+		if (!start) 
+		{
+			start = (new Date()).getTime();
 		}
+		break;
+	}
+}
 
-	};
+
+
+function handleKeyUp(evt) {
+
+
+	switch (evt.key) 
+	{
+
+
+		case 'Enter':
+		play_sound()
+		//long click 3sec
+		stop = new Date().getTime()
+		var dif = stop - start;
+		if(dif>3000)
+		{
+			delete_file()
+		}
+		start = 0;
+
+
+        break;
+
+
+		case '0':
+		show_man()
+		break
+
+		case '1':
+		add_playlist()
+		break
+
+		case '4':
+		play_playlist(0)
+		break
+
+		case '2':
+		nav_dirs("up")
+		break
+
+
+		case '5':
+		nav_dirs("down")
+		break;
+
+
+		case '7':
+		read_json()
+		break;
+
+
+		case 'ArrowDown':
+			nav("+1")
+			volume_control("down");
+		break; 
+
+
+		case 'ArrowUp':
+			nav("-1")
+			volume_control("up");
+		break; 
+
+		case 'ArrowLeft':
+			seeking("backward");
+			delete_file();
+		break; 
+
+		case 'ArrowRight':
+			seeking("forward")
+		break; 
+
+
+		case 'SoftRight':
+			button_soft_right()
+
+		break;
+
+		case 'SoftLeft':
+			button_soft_left()
+		break;
+
+
+	}
+
+};
+
+
+
+
 
 
 
 	document.addEventListener('keydown', handleKeyDown);
+	document.addEventListener('keyup', handleKeyUp);
+
 	player.addEventListener('ended', player_ended);
 	player.addEventListener('playing', player_play_run);
 	player.addEventListener('seeking', player_seeking_run);
