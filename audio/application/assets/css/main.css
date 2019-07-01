@@ -66,6 +66,20 @@ div#window-status
 
 
 
+div#delete-message
+{
+	z-index:100;
+	background:yellow;
+	position:fixed;
+	color:black;
+	bottom:30px;
+	text-align:center;
+	padding:5px;
+	overflow:none;
+	display:none;
+}
+
+
 div#podcast-message
 {
 	z-index:100;
