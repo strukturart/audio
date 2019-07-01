@@ -26,12 +26,14 @@ Put on your sd card a file with the name audio.json with the following structure
 	
 		{
 			"url":"http://www.ndr.de/podcast/podcast3008.xml",
-			"last_episods":"2"
+			"episods":"2",
+			"dir":"ndr"
 		},
 
 		{
 			"url":"http://podcast.wdr.de/radio/leonardo.xml",
-			"last_episods":"2"
+			"episods":"2"
+			"dir":"wdr"
 		},
 
 	
@@ -50,7 +52,6 @@ do a test before with adb shell!!
 
 ### to do
 
-- download more episods
 - add id3 tag-reader to create more readable file names
 
 ### Thank you

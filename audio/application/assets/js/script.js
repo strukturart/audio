@@ -335,7 +335,7 @@ function read_log()
 
 	finder.on("empty", function (needle) 
 	{
-		alert("no log founded");
+		alert("log.txt not found");
 		return;
 	});
 
