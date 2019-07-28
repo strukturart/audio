@@ -56,7 +56,7 @@ do a test before with adb shell!!
 ### to do
 
 - add id3 tag-reader to create more readable file names
-- delete thh old podcast episods
+- delete old podcast episods
 
 ### Thank you
 https://tutorials.de and https://groups.google.com/forum/#!forum/bananahackers
