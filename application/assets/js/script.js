@@ -35,6 +35,7 @@ $(document).ready(function()
 	var array_position = -1;
 	var url_counter = 0;
 	var arr_file_name = [];
+	var cmd;
 
 
 
@@ -246,11 +247,7 @@ function podcast_xml_fetcher(param_value,param_dir)
 			
 					}
 
-					//else
-					//{
-						//return false;
-					//}
-			
+
 
 				})
 
@@ -384,9 +381,14 @@ function downloade_file(param_target_dir,param_url)
 {
 
 
-			//var cmd = "cd "+param_target_dir+" && curl -kOLv --progress-bar --create-dirs "+param_url +">> /storage/sdcard/podcast/log.txt 2>&1" +";exit";
-			var cmd = "mkdir -p "+param_target_dir+" && cd "+param_target_dir+" && curl -kOL --progress-bar "+param_url +">> /storage/sdcard/podcast/log.txt 2>&1" +";exit";
-			//var cmd = "mkdir -p /storage/sdcard/podcast/test2";
+if(debug == true)
+{
+	cmd = "mkdir -p "+param_target_dir+" && cd "+param_target_dir+" && curl -kOLv  "+param_url +">> "+podcast_download_path+"log.txt 2>&1" +";exit";
+}
+else
+{
+	cmd = "mkdir -p "+param_target_dir+" && cd "+param_target_dir+" && curl -kOL --progress-bar "+param_url +">> "+podcast_download_path+"log.txt 2>&1" +";exit";
+}
 
 			var extension = navigator.kaiosExtension || navigator.engmodeExtension;
 				if(extension)
@@ -1208,7 +1210,7 @@ function handleKeyDown(evt) {
 	//////////////////////////
 	////BUG OUTPUT////////////
 	/////////////////////////
-if(debug == true)
+if(debug == off)
 {
 
 	$(window).on("error", function(evt) {
@@ -1227,110 +1229,3 @@ if(debug == true)
 });
 
 
-
-////////////////////
-///////////////////
-//MAYBE TRASH//////
-/*
-function downloade_file2(param_target_dir,param_url,param_file_name)
-{
-	download_counter++
-	alert(podcast_download_table[0])
-
-			$("div#download-progress").css("display","block")
-
-			$("div#download-progress").text(download_counter+" / "+podcast_download_table.length)
-
-
-			var request2 = new XMLHttpRequest({ mozSystem: true });
-
-
-			//request2.addEventListener("progress", updateProgress);
-			request2.addEventListener("load", transferComplete);
-			request2.addEventListener("error", transferFailed);
-			//request2.addEventListener("abort", transferCanceled);
-
-			function transferFailed(evt)
-			{
-				alert("transfer failed")
-			}
-
-			function transferComplete(evt)
-			{
-				//alert("transfer finished")
-				if(download_counter <= podcast_download_table.length)
-				{
-				downloade_file2("podcast",podcast_download_table[download_counter],"test"+download_counter+".mp3")
-				}
-				if(download_counter > podcast_download_table.length)
-				{
-
-				$("div#download-progress").css("display","none")
-				$("div#podcast-message").text("downloads done");
-
-				setTimeout(function () {
-										$("div#download-progress").text("")
-										$("div#podcast-message").text("");
-										$("div#finder div#app-list").css("display","block")
-										$("div#finder div.button-bar div.button-left").text("pause")
-										$("div#finder div.button-bar div.button-right").text("volume")
-										$("div#podcast-message").css("display","none")
-										$('body').find('div#finder div.items').first().focus()
-
-
-										}, 4000);
-				status = "player"
-
-				}
-
-			}
-
-
-			request2.open('GET', param_url,true);
-			request2.responseType = "arraybuffer";
-
-
-
-
-			request2.onloadstart = function () {
-				//alert("Download underway");
-			};
-
-			request2.onload = function () {
-				//$("div#download-progress").text(download_counter+1+" / "+podcast_download_table.length)
-
-/*
-				//save file 
-				var sdcard = navigator.getDeviceStorages("sdcard");
-
-				var file_blob   = new Blob([request2.response], {type: "audio/mpeg"});
-				var request = sdcard[1].addNamed(file_blob,param_target_dir+"/"+param_file_name);
-
-				request.onsuccess = function () {
-					var name = this.result;
-					alert('File "' + name + '" successfully wrote on the sdcard storage area');
-					if(download_counter < podcast_download_table.length)
-					{
-						$("div#download-progress").text(download_counter+1+" / "+podcast_download_table.length)
-						downloade_file2("podcast",podcast_download_table[download_counter],"test"+download_counter+".mp3")
-
-					}
-
-				}
-
-				request.onerror = function () {
-					alert('Unable to write the file: ' + this.error);
-					download_counter++
-					downloade_file2("podcast",podcast_download_table[download_counter],"test"+download_counter+".mp3")
-
-				}
-				
-
-			};
-
-
-			request2.send(null);
-
-}
-
-*/
