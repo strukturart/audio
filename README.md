@@ -1,4 +1,4 @@
-Audio Player app for the Nokia 88104G - [Gerda](https://gerda.tech/) 
+Audio Player app for the Nokia 81104G - [Gerda](https://gerda.tech/) 
 
 ### Features
 audio player and podcast downloader
