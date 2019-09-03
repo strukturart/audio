@@ -57,6 +57,8 @@ do a test before with adb shell!!
 
 - add id3 tag-reader to create more readable file names
 - delete old podcast episods
+- loop
+⁻ when playing big files >100mb crash the app 
 
 ### Thank you
 https://tutorials.de and https://groups.google.com/forum/#!forum/bananahackers
