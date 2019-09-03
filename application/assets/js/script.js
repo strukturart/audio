@@ -36,6 +36,9 @@ $(document).ready(function()
 	var url_counter = 0;
 	var arr_file_name = [];
 	var cmd;
+	var jsmediatags = window.jsmediatags;
+	var fileURL = "";
+
 
 
 
@@ -75,6 +78,8 @@ function read_json()
 {
 
 	status = "podcast"
+
+
 	
 	var finder = new Applait.Finder({ type: "sdcard", debugMode: true });
 	finder.search("audio.json");
@@ -166,12 +171,11 @@ function read_json()
 								//start fetching meta data from podcast source
 								if(podcast_data_table.length-1 > 0)
 								{
+									//alert("start downloading");
 									podcast_xml_fetcher(podcast_data_table[0][0],podcast_data_table[0][2])
 									
 
-								}
-
-								
+								}		
 
 				};
 				reader.readAsText(file)
@@ -211,6 +215,12 @@ function podcast_xml_fetcher(param_value,param_dir)
 
 
 	xhttp.onload = function () {
+		if(xhttp.status === 302)
+		{
+			alert("wrong url")
+		}
+
+		
 		if (xhttp.readyState === xhttp.DONE && xhttp.status === 200) {
 
 	
@@ -221,6 +231,7 @@ function podcast_xml_fetcher(param_value,param_dir)
 
 			loop_counter++
 			var podcast_url =  $(this).find('enclosure').attr('url')
+			var podcast_title =  $(this).find('title').text()
 
 		
 
@@ -239,14 +250,10 @@ function podcast_xml_fetcher(param_value,param_dir)
 						if(search_result == -1 && podcast_url != "")
 						{	
 							//make multiArr downloadurl and dir
-							podcast_download_table.push([podcast_url,param_dir])
-						}
-
-						/////////////////////////////////////////
-						
+							podcast_download_table.push([podcast_url,param_dir,podcast_title])
+						}				
 			
 					}
-
 
 
 				})
@@ -487,7 +494,6 @@ function check_var() {
 /////////////////
 //LIST FILES////
 ///////////////
-var jsmediatags = window.jsmediatags;
 
 function finder()
 {
@@ -495,15 +501,16 @@ function finder()
 	//clear array
 	while(arr_file_name.length > 0) 
 	{
-	arr_file_name.pop();
+		arr_file_name.pop();
 	}
 	
 
 	//clear array
 	while(podcast_download_table.length > 0) 
 	{
-	podcast_download_table.pop();
+		podcast_download_table.pop();
 	}
+
 
 
 	finderNav_tabindex = -1;
@@ -513,71 +520,82 @@ function finder()
 
 	for(var i = 0; i< filelist.length; i++)
 	{
-	var cursor = filelist[i].enumerate();
-
-	
-
-	cursor.onsuccess = function () {
-	if(cursor.result) {
-	var file = cursor.result;
-
-	// Once we found a file we check if there is other results
-	// Then we move to the next result, which call the cursor
-	// success with the next file as result.
-	if(file.type.match('audio/*'))
-	{
-
-		finderNav_tabindex++;
-		var str = file.name;
-
-		//find slash and replace with white space
-		var rest = str.substring(0, str.lastIndexOf("/") + 1);
-		rest = rest.replace(/ |\//g," ");
-
-
-
-		var dir = str.split('/');
-		var file_name = dir[dir.length-1];
-		source_dir = dir[2];
-		dir = dir[dir.length-2];
+		var cursor = filelist[i].enumerate();
 
 		
 
-		if(lastDir != dir)
+		cursor.onsuccess = function () {
+		if(cursor.result) 
 		{
-		$("div#app-list").append('<div class="dir items-container">'+dir+'</div>');		
+			var file = cursor.result;
+
+			if(file.type.match('audio/*'))
+			{
+
+				fileURL = URL.createObjectURL(file)
+
+/*
+				if(jsmediatags)
+				{
+
+				jsmediatags.read(fileURL, {
+					onSuccess: function(tag) {
+					console(tag);
+				},
+					onError: function(error) {
+					console(':(', error.type, error.info);
+					}
+				});
+
+				}
+*/
+
+				finderNav_tabindex++;
+				var str = file.name;
+
+				//find slash and replace with white space
+				var rest = str.substring(0, str.lastIndexOf("/") + 1);
+				rest = rest.replace(/ |\//g," ");
+
+
+
+				var dir = str.split('/');
+				var file_name = dir[dir.length-1];
+				source_dir = dir[2];
+				dir = dir[dir.length-2];
+
+			
+
+				if(lastDir != dir)
+				{
+					$("div#app-list").append('<div class="dir items-container">'+dir+'</div>');		
+				}
+				$("div#app-list").append('<div class="items" tabindex="'+finderNav_tabindex+'" data-file-url="'+str+'" data-content="'+file_name+'" data-content2="'+fileURL+'">'+file_name+'</div>');		
+				lastDir = dir
+				//push in array to compare later with podcast downlad function
+				arr_file_name.push(file_name)
+			}
+
+
+			// Once we found a file we check if there is other results
+			if (!this.done) {
+			// Then we move to the next result, which call the
+			// cursor success with the next file as result.
+			this.continue();
+			}
+
+			
+
+			}
+				$('body').find('div#finder div.items').first().focus()
+
 		}
-		$("div#app-list").append('<div class="items" tabindex="'+finderNav_tabindex+'" data-file-url="'+str+'" data-content="'+file_name+'">'+file_name+'</div>');		
-		lastDir = dir
-		//push in array to compare later
-		arr_file_name.push(file_name)
+
+
+		cursor.onerror = function () 
+		{
+			alert("No file found: " + this.error); 
 		}
-
-		cursor.continue();
-		$('body').find('div#finder div.items').first().focus()
-
-
-		jsmediatags.read(str, {
-		onSuccess: function(tag) {
-		console.log(tag);
-		},
-		onError: function(error) {
-		console.log(error);
-		}
-		});
-
-
-		
-
-		}
-	}
-
-
-
-	cursor.onerror = function () 
-	{
-		alert("No file found: " + this.error); 
-	}
 
 
 
@@ -683,6 +701,68 @@ function nav_dirs(param)
 //////////////////
 //PLAY
 //////////////////
+//Test get URL.createObjectURL(file) from array
+
+function dev_play_sound()
+
+
+{
+
+		
+		player.src =  "";
+
+		$("div#time").css("opacity","0")
+		var selected_button = $("div#finder div:focus")[0];
+		if(selected_button != "undefined" && status != "delete")
+		{
+			var source = selected_button.getAttribute('data-content2');
+			
+
+			var finder = new Applait.Finder({ type: "sdcard", debugMode: false });
+				player.src = source
+				player.play();
+
+				//time duration
+				$(player).on("loadedmetadata", function(){
+
+				setInterval(function() { 
+							var time = player.duration - player.currentTime; 
+							var minutes = parseInt(time / 60, 10);
+							var seconds_long = parseInt(time % 60,10);
+							var seconds;
+							if(seconds_long < 10)
+							{
+								seconds = "0"+seconds_long;
+							}
+							else
+							{
+								seconds = seconds_long;
+							}
+							$("div#time").text(minutes+":"+seconds);
+
+							
+				}, 1000);
+		
+
+				});
+
+				player.ondurationchange = function() {
+					setTimeout(function(){
+						$("div#time").css("opacity","1");
+					},2000);
+				};
+
+				$('div.items').removeClass('active')
+				$(selected_button).addClass('active')
+				
+	}	
+
+}
+
+
+//////////////////
+//PLAY
+//////////////////
 
 
 function play_sound()
@@ -750,6 +830,8 @@ function play_sound()
 	}	
 
 }
+
+
 
 
 
@@ -928,26 +1010,8 @@ if(playlist.length == 0)
 
 
 
-//////MAN///////
 
 
-function show_man()
-{
-	$("div#man-page").css('display','block')
-	window_status = true;
-}
-
-function close_man()
-{
-	$("div#man-page").css('display','none')
-	window_status = false;
-}
-
-
-
-
-function  player_play_run()
-{}
 
 
 
@@ -1186,6 +1250,10 @@ function handleKeyDown(evt) {
 			button_soft_left()
 		break;
 
+		case 'Backspace':
+			close.window()
+		break;
+
 
 	}
 
@@ -1201,7 +1269,6 @@ function handleKeyDown(evt) {
 	document.addEventListener('keyup', handleKeyUp);
 
 	player.addEventListener('ended', player_ended);
-	player.addEventListener('playing', player_play_run);
 	player.addEventListener('seeking', player_seeking_run);
 
 
@@ -1210,7 +1277,7 @@ function handleKeyDown(evt) {
 	//////////////////////////
 	////BUG OUTPUT////////////
 	/////////////////////////
-if(debug == off)
+if(debug == true)
 {
 
 	$(window).on("error", function(evt) {

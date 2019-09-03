@@ -41,6 +41,9 @@ html,body
 	-webkit-appearance: none;
 	height: 100%;
 	margin: 0;
+	hyphens: auto;
+	-webkit-hyphens: auto;
+	 word-wrap:break-word;
 }
 
 
@@ -143,7 +146,8 @@ div#finder div#app-list
 	margin:0 0 3px 0;
 	padding:3px;
 	max-height:90%;
-	min-width:95%;
+	min-width:99%;
+	max-width:99%;
 	overflow:hidden;
 }
 
@@ -163,9 +167,8 @@ div#finder div#app-list div.dir
 
 div#finder div:focus
 {
-	background:yellow;
+	background:white;
 	color:black;
-	border:2px solid yellow;
 }
 
 
