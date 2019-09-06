@@ -14,7 +14,6 @@ audio player and podcast downloader
 + **key 4** play playlist
 + **key 5** jump to next folder
 + **key 2** jump to previous folder
-+ **key 0** open man page
 + **key 7** download podcasts
 
 ### Podcast downloader
