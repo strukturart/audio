@@ -49,7 +49,7 @@ do a test before with adb shell!!
 ### to do
 
 - add id3 tag-reader to create more readable file names
-- delete old podcast episods
+- delete old podcast episodes
 - loop
 ⁻ when playing big files >100mb crash the app 
 
