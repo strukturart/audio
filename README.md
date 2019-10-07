@@ -17,7 +17,7 @@ audio player and podcast downloader
 + **key 7** download podcasts
 
 ### Podcast downloader
-Put on your sd card a file with the name audio.json with the following structure:
+Put on your sd card a file with the name `audio.json` with the following structure:
 
 
 ```
@@ -25,23 +25,17 @@ Put on your sd card a file with the name audio.json with the following structure
 	
 		{
 			"url":"http://www.ndr.de/podcast/podcast3008.xml",
-			"episods":"2",
+			"episodes":"2",
 			"dir":"ndr"
 		},
-
 		{
 			"url":"http://podcast.wdr.de/radio/leonardo.xml",
-			"episods":"2"
+			"episodes":"2",
 			"dir":"wdr"
 		},
-
-	
-
 		{
 			"download_path":"/storage/sdcard/podcast/"
-
 		}
-	
 ]
 
 ```
