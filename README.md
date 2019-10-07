@@ -1,4 +1,4 @@
-Audio Player app for the Nokia 81104G - [Gerda](https://gerda.tech/) 
+Audio Player app for the Nokia 81104G -KaiOS
 
 ### Features
 audio player and podcast downloader
@@ -55,3 +55,12 @@ do a test before with adb shell!!
 
 ### Thank you
 https://tutorials.de and https://groups.google.com/forum/#!forum/bananahackers
+
+
+## Donation
+
+You like the app and you have enough money
+
+[![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Q8QLA8CNMWAWG)
+
+

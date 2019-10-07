@@ -194,8 +194,8 @@ div#finder div#app-list div.items:focus:not(.active)
 
 div#finder div.playlist-item
 {
-	background:orange;
-	color:black;
+	border-left:4px solid yellow;
+	padding:0 0 0 2px;
 }
 
 

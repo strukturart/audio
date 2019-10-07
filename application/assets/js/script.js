@@ -145,7 +145,6 @@ function read_json()
 							$("div#finder div.button-bar div.button-right").text("")
 
 
-
 								var data = JSON.parse(markers_file);
 
 
@@ -491,6 +490,9 @@ function check_var() {
 //LIST FILES////
 ///////////////
 
+var file_name_metadata;
+
+var files_collection = [];
 function finder()
 {
 
@@ -514,9 +516,10 @@ function finder()
 	$("div#app-list").empty()
 	var filelist = navigator.getDeviceStorages('sdcard');
 
+
 	for(var i = 0; i< filelist.length; i++)
 	{
-		var cursor = filelist[i].enumerate();
+		var cursor = filelist[i].enumerateEditable();
 
 		
 
@@ -530,28 +533,11 @@ function finder()
 
 				fileURL = URL.createObjectURL(file)
 
-/*
-				if(jsmediatags)
-				{
-
-				jsmediatags.read(fileURL, {
-					onSuccess: function(tag) {
-					console(tag);
-				},
-					onError: function(error) {
-					console(':(', error.type, error.info);
-					}
-				});
-
-				}
-*/
-
-				finderNav_tabindex++;
 				var str = file.name;
 
 				//find slash and replace with white space
-				var rest = str.substring(0, str.lastIndexOf("/") + 1);
-				rest = rest.replace(/ |\//g," ");
+				//var rest = str.substring(0, str.lastIndexOf("/") + 1);
+				//rest = rest.replace(/ |\//g," ");
 
 
 
@@ -560,15 +546,41 @@ function finder()
 				source_dir = dir[2];
 				dir = dir[dir.length-2];
 
-			
+				
 
-				if(lastDir != dir)
-				{
-					$("div#app-list").append('<div class="dir items-container">'+dir+'</div>');		
-				}
-				$("div#app-list").append('<div class="items" tabindex="'+finderNav_tabindex+'" data-file-url="'+str+'" data-content="'+file_name+'" data-content2="'+fileURL+'">'+file_name+'</div>');		
-				lastDir = dir
+/* dev
+
+				musicmetadata(file, function (err, result) {
+					if (err)
+					{
+						alert("no metadata found")
+						file_name_metadata = file_name
+					}
+					if(result)
+					{
+						file_name_metadata = result.title;
+					}
+
+				});
+
+*/
+				finderNav_tabindex++;
+
+
+				files_collection.push([str,file_name,file_name_metadata,fileURL,dir,file])
+				
+					if(lastDir != dir)
+					{
+						$("div#app-list").append('<div class="dir items-container">'+dir+'</div>');		
+					}
+						$("div#app-list").append('<div class="items" tabindex="'+finderNav_tabindex+'" data-file-url="'+str+'" data-content="'+file_name+'" data-content2="'+fileURL+'">'+file_name+'</div>');		
+						lastDir = dir
+				
+			
+				
+
 				//push in array to compare later with podcast downlad function
+				//why not use files_collection[x][1] to compare ???
 				arr_file_name.push(file_name)
 			}
 
@@ -580,10 +592,13 @@ function finder()
 			this.continue();
 			}
 
-			
-
 			}
-				$('body').find('div#finder div.items').first().focus()
+
+				
+		$('body').find('div#finder div.items').first().focus()
+
+		
+
 
 		}
 
@@ -594,12 +609,53 @@ function finder()
 		}
 
 
+	}
+}
+
+function set_tabindex()
+{
+		items = $('div#app-list > div.items');
+
+		
+		for(var i =0; i < items.length; i++)
+		{
+			$(items[i]).attr('tabindex',i) 
+			//pos_focus = 0
+			$('div#app-list').find('div.items[tabindex=0]').focus();
+		}
+}
+
+
+
+
+finder();
+
+////////////////
+//////DEV///////
+////////////////
+
+
+function read_metadata()
+{
+	for(var i = 0; i < files_collection.length; i++ )
+	{
+		musicmetadata(files_collection[i][5], function (err, result) {
+					if (err)
+					{
+						console.log("no metadata found")
+					}
+					if(result)
+					{
+						console.log(result.title);
+					}
+
+				});
 
 	}
 }
 
-finder();
 
+///////////////
 
 ////////////////////////
 //DELETE FILE
@@ -700,8 +756,6 @@ function nav_dirs(param)
 //Test get URL.createObjectURL(file) from array
 
 function dev_play_sound()
-
-
 {
 	
 		
@@ -774,76 +828,71 @@ function dev_play_sound()
 
 
 function play_sound()
-
-
 {
+	
+	player.src =  "";
 
+	$("div#time").css("opacity","0")
+	var selected_button = $("div#finder div:focus")[0];
+	if(selected_button != "undefined" && status != "delete")
+	{
+		var source = selected_button.getAttribute('data-content');
 		
-		player.src =  "";
 
-		$("div#time").css("opacity","0")
-		var selected_button = $("div#finder div:focus")[0];
-		if(selected_button != "undefined" && status != "delete")
-		{
-			var source = selected_button.getAttribute('data-content');
+		var finder = new Applait.Finder({ type: "sdcard", debugMode: false });
+		finder.search(source);
+
+		finder.on("fileFound", function (file, fileinfo, storageName) {
+			var mysrc = URL.createObjectURL(file);
+			player.src =  mysrc;
+			player.play();
+
+			//time duration
+			$(player).on("loadedmetadata", function(){
+
+			setInterval(function() { 
+						var time = player.duration - player.currentTime; 
+						var minutes = parseInt(time / 60, 10);
+						var seconds_long = parseInt(time % 60,10);
+						var seconds;
+						if(seconds_long < 10)
+						{
+							seconds = "0"+seconds_long;
+						}
+						else
+						{
+							seconds = seconds_long;
+						}
+						$("div#time").text(minutes+":"+seconds);
+
+						
+			}, 1000);
+	
+
+			});
+
+			player.ondurationchange = function() {
+				setTimeout(function(){
+					$("div#time").css("opacity","1");
+				},2000);
+			};
+
+			$('div.items').removeClass('active')
+			$(selected_button).addClass('active')
 			
+			URL.revokeObjectURL(file);
 
-			var finder = new Applait.Finder({ type: "sdcard", debugMode: false });
-			finder.search(source);
-
-			finder.on("fileFound", function (file, fileinfo, storageName) {
-				var mysrc = URL.createObjectURL(file);
-				player.src =  mysrc;
-				player.play();
-
-				//time duration
-				$(player).on("loadedmetadata", function(){
-
-				setInterval(function() { 
-							var time = player.duration - player.currentTime; 
-							var minutes = parseInt(time / 60, 10);
-							var seconds_long = parseInt(time % 60,10);
-							var seconds;
-							if(seconds_long < 10)
-							{
-								seconds = "0"+seconds_long;
-							}
-							else
-							{
-								seconds = seconds_long;
-							}
-							$("div#time").text(minutes+":"+seconds);
-
-							
-				}, 1000);
+			})
+	
 		
-
-				});
-
-				player.ondurationchange = function() {
-					setTimeout(function(){
-						$("div#time").css("opacity","1");
-					},2000);
-				};
-
-				$('div.items').removeClass('active')
-				$(selected_button).addClass('active')
-				
-				URL.revokeObjectURL(file);
-
-					})
-
-			
-		
-	}	
+		}	
 
 		$('div.items').removeClass('active')
-				$("div#finder div#app-list div.items").css("background","black");
-				$("div#finder div#app-list div.items").css("color","white");
-				$("div#finder div#app-list div.items:focus").css("color","black!Important");
-				$("div#finder div#app-list div.items:focus").css("background","white!Important");
-
-				$(selected_button).addClass('active')
+		$("div#finder div#app-list div.items").css("background","black");
+		$("div#finder div#app-list div.items").css("color","white");
+		$("div#finder div#app-list div.items:focus").css("color","black!Important");
+		$("div#finder div#app-list div.items:focus").css("background","white!Important");
+		$(selected_button).addClass('active')
 
 }
 
@@ -859,20 +908,21 @@ function seeking(param)
 {
 var step = 10;
 player.pause();
-	if(param == "forward")
+	if(param == "backward")
 	{
 		player.currentTime = player.currentTime - step++
 
 	}
 
 
-	if(param == "backward")
+	if(param == "forward")
 	{
 				player.currentTime = player.currentTime + step++
 
 
 	}
 	player.play();
+	//player.muted=false;
 
 }
 
@@ -901,39 +951,34 @@ function pause_sound()
 }
 
 
-
+////////////////////////
 ////VOLUME CONTROL//////
+///////////////////////
 
 
 
 function volume_control(param)
 {
 		
-		if(status == "volume")
+	if(status == "volume")
 	{
+		if(param == "up")
+		{
+			volume.requestUp()
 
-
-
-	if(param == "up")
-	{
-		volume.requestUp()
-
-		setTimeout(function() {
-		status = "player";
-	}, 2000);
-
-
+			setTimeout(function() {
+			status = "player";
+		}, 2000);
 	}
 
 
 
 	if(param == "down")
 	{
-	volume.requestDown()
-
-	setTimeout(function() {
-	status = "player";
-	}, 2000);
+		volume.requestDown()
+		setTimeout(function() {
+		status = "player";
+		}, 2000);
 	}
 
 }
@@ -943,11 +988,9 @@ function volume_control(param)
 }
 
 
-
+//////////////////
 /////PLAYLIST/////
-
-
-
+//////////////////
 
 function add_playlist()
 {
@@ -1199,11 +1242,11 @@ function handleKeyDown(evt) {
 			func_interval();
 		break;
 
-
 		case '0':
-		show_man()
+			read_metadata();
+		break;
+
 		
-		break
 
 		case '1':
 		add_playlist()
