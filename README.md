@@ -14,11 +14,10 @@ audio player and podcast downloader
 + **key 4** play playlist
 + **key 5** jump to next folder
 + **key 2** jump to previous folder
-+ **key 0** open man page
 + **key 7** download podcasts
 
 ### Podcast downloader
-Put on your sd card a file with the name audio.json with the following structure:
+Put on your sd card a file with the name `audio.json` with the following structure:
 
 
 ```
@@ -26,23 +25,17 @@ Put on your sd card a file with the name audio.json with the following structure
 	
 		{
 			"url":"http://www.ndr.de/podcast/podcast3008.xml",
-			"episods":"2",
+			"episodes":"2",
 			"dir":"ndr"
 		},
-
 		{
 			"url":"http://podcast.wdr.de/radio/leonardo.xml",
-			"episods":"2"
+			"episodes":"2",
 			"dir":"wdr"
 		},
-
-	
-
 		{
 			"download_path":"/storage/sdcard/podcast/"
-
 		}
-	
 ]
 
 ```
@@ -56,7 +49,7 @@ do a test before with adb shell!!
 ### to do
 
 - add id3 tag-reader to create more readable file names
-- delete old podcast episods
+- delete old podcast episodes
 - loop
 ⁻ when playing big files >100mb crash the app 
 

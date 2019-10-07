@@ -233,8 +233,6 @@ function podcast_xml_fetcher(param_value,param_dir)
 			var podcast_url =  $(this).find('enclosure').attr('url')
 			var podcast_title =  $(this).find('title').text()
 
-		
-
 					if(loop_counter<max_iteration)
 					{
 						
@@ -313,8 +311,6 @@ function podcast_xml_fetcher(param_value,param_dir)
 	xhttp.send(null)
 
 }
-
-
 
 
 //////////////////////////////
@@ -707,9 +703,10 @@ function dev_play_sound()
 
 
 {
-
+	
 		
 		player.src =  "";
+		
 
 		$("div#time").css("opacity","0")
 		var selected_button = $("div#finder div:focus")[0];
@@ -718,7 +715,6 @@ function dev_play_sound()
 			var source = selected_button.getAttribute('data-content2');
 			
 
-			var finder = new Applait.Finder({ type: "sdcard", debugMode: false });
 				player.src = source
 				player.play();
 
@@ -727,6 +723,7 @@ function dev_play_sound()
 
 				setInterval(function() { 
 							var time = player.duration - player.currentTime; 
+							var percent = (player.currentTime / player.duration) *100;
 							var minutes = parseInt(time / 60, 10);
 							var seconds_long = parseInt(time % 60,10);
 							var seconds;
@@ -740,7 +737,11 @@ function dev_play_sound()
 							}
 							$("div#time").text(minutes+":"+seconds);
 
-							
+							percent = percent+"%";
+
+							$("div#finder div.active").css({background: 'linear-gradient(to right, orange '+percent+', white 0%)'})
+							$("div#finder div.active").css('color','black')
+
 				}, 1000);
 		
 
@@ -752,10 +753,17 @@ function dev_play_sound()
 					},2000);
 				};
 
-				$('div.items').removeClass('active')
-				$(selected_button).addClass('active')
 				
 	}	
+
+
+				$('div.items').removeClass('active')
+				$("div#finder div#app-list div.items").css("background","black");
+				$("div#finder div#app-list div.items").css("color","white");
+				$("div#finder div#app-list div.items:focus").css("color","black!Important");
+				$("div#finder div#app-list div.items:focus").css("background","white!Important");
+
+				$(selected_button).addClass('active')
 
 }
 
@@ -828,6 +836,14 @@ function play_sound()
 			
 		
 	}	
+
+		$('div.items').removeClass('active')
+				$("div#finder div#app-list div.items").css("background","black");
+				$("div#finder div#app-list div.items").css("color","white");
+				$("div#finder div#app-list div.items:focus").css("color","black!Important");
+				$("div#finder div#app-list div.items:focus").css("background","white!Important");
+
+				$(selected_button).addClass('active')
 
 }
 
@@ -1012,10 +1028,6 @@ if(playlist.length == 0)
 
 
 
-
-
-
-
 function player_ended()
 {
 	$("div#time").text("");
@@ -1141,18 +1153,13 @@ function func_interval()
 	var counter = 0;
 	key_time = setInterval(function() { 
 				counter++
+				player.src="";
 		
 				if(counter === 2)
 				{
 					delete_file()
 					player.src="";
-
-				}
-
-				if(counter > 0)
-				{
-					player.src="";
-
+					clearInterval(key_time)
 				}
 						
 	}, 1000);
@@ -1174,7 +1181,7 @@ function handleKeyUp(evt)
 	{
 		case 'Enter':
 			clearInterval(key_time);
-			play_sound();
+			dev_play_sound();
 		break;
 	}
 }
@@ -1269,7 +1276,7 @@ function handleKeyDown(evt) {
 	document.addEventListener('keyup', handleKeyUp);
 
 	player.addEventListener('ended', player_ended);
-	player.addEventListener('seeking', player_seeking_run);
+	//player.addEventListener('seeking', player_seeking_run);
 
 
 

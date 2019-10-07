@@ -149,11 +149,14 @@ div#finder div#app-list
 	min-width:99%;
 	max-width:99%;
 	overflow:hidden;
+
 }
 
 div#finder div#app-list div
 {
 	min-width:100%;
+	position:relative;
+
 }
 
 
@@ -163,13 +166,27 @@ div#finder div#app-list div.dir
 	color:black;
 }
 
-
-
-div#finder div:focus
+div#finder div#app-list div.items
 {
-	background:white;
-	color:black;
+	background:black;
+	color:white;
 }
+
+
+div#finder div#app-list div.active
+{
+	position:relative;
+}
+
+
+div#finder div#app-list div.items:focus:not(.active)
+{
+
+	background:white!Important;
+	color:black!Important;
+}
+
+
 
 
 
@@ -181,11 +198,12 @@ div#finder div.playlist-item
 	color:black;
 }
 
-div#finder div.active
-{
-	background:blue;
-	color:black;
-}
+
+
+
+
+
+
 
 
 div#finder div.button-bar
@@ -197,60 +215,6 @@ div#finder div.button-bar
 	left:0px!Important;
 	z-index:5;
 	background:black;
-}
-
-
-
-/*///////////////////////////
-///MAN-PAGE////////////////*/
-
-
-div#man-page
-{
-  display:none;
-  position:absolute;
-  z-index:1000;
-  top:0;
-  background:black;
-  color:white;
-  font-size: 12px;
-  padding:5px 5px 50px 5px;
-  overflow-y:hidden; 
-  overflow-x:scroll;
-}
-
-div#man-page h1
-{
-  font-weight: 800;
-  margin:0 0 10px 0;
-  font-size:14px;
-  color:blue;
-
-}
-
-div#man-page h2
-{
-  color:blue;
-  font-size:12px;
-}
-
-div#man-page li div
-{
- padding:0 0 0 10px;
-
-}
-
-
-div#man-page div#close
-{
-	background:black;
-	color:white;
-	font-size:14px;
-	padding:3px;
-	position:fixed;
-	bottom:0px;
-	left:5px;
-	min-width:100vw;
 }
 
 
