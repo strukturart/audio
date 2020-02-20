@@ -1,250 +1,213 @@
-
 /*GENERAL*/
 
 :root {
     --color-one: black;
     --color-two: yellow;
-    --color-three:silver;
-    --color-four:rgb(99,99,99);
-    --color-five:rgb(38,38,38);
-    --color-six:rgb(78,206,144);
-    --color-seven:gainsboro;
- 
-}
-*, *:before, *:after 
-{
-  
-  border:0px;
-  padding:0px;
-  margin:0px;
-  box-sizing: border-box;
+    --color-three: silver;
+    --color-four: rgb(99, 99, 99);
+    --color-five: rgb(38, 38, 38);
+    --color-six: rgb(78, 206, 144);
+    --color-seven: gainsboro;
 }
 
-*::-webkit-scrollbar 
-{
-	width: 0!important;
-	background-color:transparent!Important;
-	display:none!Important;
+*,
+*:before,
+*:after {
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
 }
 
+*::-webkit-scrollbar {
+    width: 0!important;
+    background-color: transparent!Important;
+    display: none!Important;
+}
 
-html,body
-{
-
-	font-weight: 100;
-	width:100%;
-	position:relative;
-	margin:0px;
-	padding:0px;  
-	font-size:1.0rem;
-	line-height:1.4rem;
-	-webkit-appearance: none;
-	height: 100%;
-	margin: 0;
-	hyphens: auto;
-	-webkit-hyphens: auto;
-	 word-wrap:break-word;
+html,
+body {
+    font-weight: 100;
+    width: 100%;
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+    font-size: 1.0rem;
+    line-height: 1.4rem;
+    -webkit-appearance: none;
+    height: 100%;
+    margin: 0;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    word-wrap: break-word;
 }
 
 
+/*///////////////////////////
+///TOAST////////////////*/
 
+div#toast {
+    position: fixed;
+    height: auto;
+    overflow: none;
+    top: -100px;
+    background: black;
+    color: white;
+    z-index: 2000;
+    min-width: 100%;
+    padding: 5px;
+}
 
 
 /*///////////////////////////
 ///HELPER////////////////*/
 
-
-div#window-status
-{
-	position:fixed;
-	top:10px;
-	left:5px;
-	background:black;
-	color:white;
-	z-index: 1000;
-	display:none;
-
+div#window-status {
+    position: fixed;
+    top: 10px;
+    left: 5px;
+    background: black;
+    color: white;
+    z-index: 1000;
+    display: none;
 }
 
-
-
-
-div#delete-message
-{
-	z-index:100;
-	background:yellow;
-	position:fixed;
-	color:black;
-	bottom:30px;
-	text-align:center;
-	padding:5px;
-	overflow:none;
-	display:none;
+div#delete-message {
+    z-index: 100;
+    background: yellow;
+    position: fixed;
+    color: black;
+    bottom: 30px;
+    text-align: center;
+    padding: 5px;
+    overflow: none;
+    display: none;
 }
 
-
-div#podcast-message
-{
-	z-index:100;
-	background:yellow;
-	position:fixed;
-	color:black;
-	bottom:30px;
-	text-align:center;
-	padding:5px;
-	display:none;
+div#podcast-message {
+    z-index: 100;
+    background: yellow;
+    position: fixed;
+    color: black;
+    bottom: 30px;
+    text-align: center;
+    padding: 5px;
+    display: none;
 }
 
-div#download-progress
-{
-	z-index:100;
-	background:yellow;
-	position:fixed;
-	color:black;
-	top:10px;
-	text-align:center;
-	padding:5px;
-	display:none;
-	
+div#download-progress {
+    z-index: 100;
+    background: yellow;
+    position: fixed;
+    color: black;
+    top: 10px;
+    text-align: center;
+    padding: 5px;
+    display: none;
 }
 
 
 /*///////////////////////////
 ///FINDER////////////////*/
 
-div#finder
-{
-	position:relative;
-	background:black;
-	padding:5px;
-	color:white;
-	height:100vh;
-	width:100vw;
+div#finder {
+    position: relative;
+    background: black;
+    padding: 5px;
+    color: white;
+    height: 100vh;
+    width: 100vw;
 }
 
-
-div#finder-error
-{
-	position:absolute;
-	z-index:2;
-	top:50%;
-	left:50%;
-	margin:-7px 0 0 -50px;
-	width:92px;
-	background:black;
-	color:white;
-	font-size:14px;
-	padding:3px;
-	display:none;
+div#finder-error {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    margin: -7px 0 0 -50px;
+    width: 92px;
+    background: black;
+    color: white;
+    font-size: 14px;
+    padding: 3px;
+    display: none;
 }
 
-
-div#finder div#app-list
-{
-	background:black;
-	color:white;
-	margin:0 0 3px 0;
-	padding:3px;
-	max-height:90%;
-	min-width:99%;
-	max-width:99%;
-	overflow:hidden;
-
+div#finder div#app-list {
+    background: black;
+    color: white;
+    margin: 0 0 3px 0;
+    padding: 3px;
+    max-height: 90%;
+    min-width: 99%;
+    max-width: 99%;
+    overflow: hidden;
 }
 
-div#finder div#app-list div
-{
-	min-width:100%;
-	position:relative;
-
+div#finder div#app-list div {
+    min-width: 100%;
+    position: relative;
 }
 
-
-div#finder div#app-list div.dir
-{
-	background:silver;
-	color:black;
+div#finder div#app-list div.dir {
+    background: silver;
+    color: black;
 }
 
-div#finder div#app-list div.items
-{
-	background:black;
-	color:white;
+div#finder div#app-list div.items {
+    background: black;
+    color: white;
 }
 
-
-div#finder div#app-list div.active
-{
-	position:relative;
+div#finder div#app-list div.active {
+    position: relative;
 }
 
-
-div#finder div#app-list div.items:focus:not(.active)
-{
-
-	background:white!Important;
-	color:black!Important;
+div#finder div#app-list div.last-played {
+    border-right: 3px solid red!Important;
 }
 
-
-
-
-
-
-
-div#finder div.playlist-item
-{
-	background:orange;
-	color:black;
+div#finder div#app-list div.items:focus:not(.active) {
+    background: white!Important;
+    color: black!Important;
 }
 
-
-
-
-
-
-
-
-
-div#finder div.button-bar
-{
-	padding:0 2px 0 0;
-	border-top:3px solid pink;
-	position: fixed;
-	bottom:0px!Important;
-	left:0px!Important;
-	z-index:5;
-	background:black;
+div#finder div.playlist-item {
+    border-left: 4px solid yellow;
+    padding: 0 0 0 2px;
 }
 
-
-
-
-div#debugger
-{
-	display:none;
-	position:fixed;
-	top:10px;
-	left:10px;
-	width:80%;
-	height:20px;
-	background:pink;
-	color:black;
+div#finder div.button-bar {
+    padding: 0 2px 0 0;
+    border-top: 3px solid pink;
+    position: fixed;
+    bottom: 0px!Important;
+    left: 0px!Important;
+    z-index: 5;
+    background: black;
 }
 
-
-
-
-
-
+div#debugger {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 80%;
+    height: 20px;
+    background: pink;
+    color: black;
+}
 
 
 /* KaiOS portrait devices (240x320) */
-@media only screen and (orientation : portrait) {
-  /* styles */
+
+@media only screen and (orientation: portrait) {
+    /* styles */
 }
 
+
 /* KaiOS landscape devices (320x240) */
+
 @media screen and (orientation: landscape) {
-  /* styles */
+    /* styles */
 }
