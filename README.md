@@ -14,6 +14,7 @@ audio player and podcast downloader
 + **key 4** play playlist
 + **key 5** jump to next folder
 + **key 2** jump to previous folder
++ **key 3** jump to last played track 
 + **key 7** download podcasts
 
 ### Podcast downloader
@@ -50,8 +51,8 @@ do a test before with adb shell!!
 
 - add id3 tag-reader to create more readable file names
 - delete old podcast episodes
-- loop
 ⁻ when playing big files >100mb crash the app 
+
 
 ### Thank you
 https://tutorials.de and https://groups.google.com/forum/#!forum/bananahackers
