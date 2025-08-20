@@ -20,7 +20,7 @@ audio player and podcast downloader
 + **key 0** seek to start
 
 ### Podcast downloader
-Put on your sd card a file with the name `audio.json` with the following structure:
+Put on your sd card a file with the name `config.json` with the following structure:
 
 
 ```
