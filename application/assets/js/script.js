@@ -3,7 +3,7 @@ let tabindex = -1;
 var status_player = "stop";
 var volume = navigator.volumeManager;
 var status = "player"; //player, volume, podcast,delete
-var debug = false;
+var debug = true;
 var lastDir = "";
 var playlist = [];
 var playlist_status = "";
@@ -14,19 +14,18 @@ player.mozAudioChannelType = 'content';
 player.type = "audio/mpeg";
 player.preload = "none";
 
-var window_status = false;
 var podcast_data_table = [];
 var podcast_download_table = [];
 var podcast_download_path = "";
 var download_done = "done";
 var download_counter = -1;
-var podcast_action = false;
+
 var files_collection = [];
 
+//podcast-related
 var array_position = -1;
 var url_counter = 0;
 var arr_file_name = [];
-var cmd;
 var jsmediatags = window.jsmediatags;
 var fileURL = "";
 
@@ -48,7 +47,7 @@ $(document).ready(function() {
 
 
         var finder = new Applait.Finder({ type: "sdcard", debugMode: true });
-        finder.search("audio.json");
+        finder.search("config.json");
 
 
 
@@ -60,7 +59,7 @@ $(document).ready(function() {
         finder.on("searchComplete", function(needle, filematchcount) {
 
             if (filematchcount == 0) {
-                alert("no markers.json file found");
+                alert("no config.json file found");
                 return;
             }
         })
@@ -321,6 +320,7 @@ $(document).ready(function() {
 
 
     function downloade_file(param_target_dir, param_url) {
+        var cmd;
 
         if (debug) {
             cmd = "mkdir -p " + param_target_dir + " && cd " + param_target_dir + " && curl -kOLv  " + param_url + ">> " + podcast_download_path + "log.txt 2>&1" + ";exit";
@@ -426,18 +426,15 @@ $(document).ready(function() {
     }
 
 
-
-    ///////////////////
-    ///PLAYER/////////
+    //////////////////
+    ///FILE LISTING///
     /////////////////
-    //LIST FILES////
-    ///////////////
-
-    var file_name_metadata;
 
     function finder() {
         status = "player";
 
+        $("div#time").text("indexing...");
+        $("div#time").css("opacity", "1");
 
         //clear array
         while (arr_file_name.length > 0) {
@@ -493,40 +490,27 @@ $(document).ready(function() {
                         arr_file_name.push(file_name)
 
                     }
-
-
                     // Once we found a file we check if there is other results
                     if (!this.done) {
                         // Then we move to the next result, which call the
                         // cursor success with the next file as result.
                         this.continue();
                     }
-
-                    $('div#app-list').find('div.items[tabindex=0]').focus();
-                    styleLastPlayedTrack();
-
-
                 }
-
             }
-
 
             cursor.onerror = function() {
                 toaster("No file found: " + this.error);
             }
-
-
-
-
-
         }
+
+        setTimeout(() => {
+            $('div#app-list').find('div.items[tabindex="0"]').focus();
+            $("div#time").text("");
+            $("div#time").css("opacity", "0");
+            styleLastPlayedTrack();
+        }, 1000); // without the wait it doesn't find anything lol I hate this OS
     }
-
-    finder();
-
-
-
-
 
     function set_tabindex() {
         items = $('div#app-list > div.items');
@@ -540,50 +524,6 @@ $(document).ready(function() {
     }
 
 
-
-
-
-
-    ////////////////
-    //////DEV///////
-    ////////////////
-
-
-    function read_metadata2() {
-        for (var i = 0; i < files_collection.length;) {
-            musicmetadata(files_collection[i][5], function(err, result) {
-                if (err) {
-                    console.log("no metadata found")
-                    i++
-                }
-                if (result) {
-                    console.log(result.title);
-                    i++
-                }
-
-            });
-
-        }
-    }
-
-    function read_metadata() {
-        for (var i = 0; i < files_collection.length;) {
-            jsmediatags.read(files_collection[i][0], {
-                onSuccess: function(tag) {
-                    toaster(tag);
-                    i++;
-                },
-                onError: function(error) {
-                    toaster(error);
-                    i++;
-                }
-            });
-
-        }
-    }
-
-
-    ///////////////
 
     ////////////////////////
     //DELETE FILE
@@ -672,9 +612,8 @@ $(document).ready(function() {
     //////////////////
     //PLAY
     //////////////////
-    //Test get URL.createObjectURL(file) from array
 
-    function dev_play_sound() {
+    function play_sound() {
 
 
         player.src = "";
@@ -688,7 +627,11 @@ $(document).ready(function() {
 
             player.src = source
             player.play();
-            //rember last played track
+            //load last played track and the second we stopped playing
+            var last_played = localStorage.getItem('last_played_sound');
+            if (last_played == selected_button.getAttribute('data-content'))
+                player.fastSeek(localStorage.getItem('last_played_sound_timestamp'));
+
             localStorage.setItem('last_played_sound', selected_button.getAttribute('data-content'))
 
 
@@ -740,79 +683,6 @@ $(document).ready(function() {
     }
 
 
-    //////////////////
-    //PLAY
-    //////////////////
-
-
-    function play_sound() {
-
-        player.src = "";
-
-        $("div#time").css("opacity", "0")
-        var selected_button = $("div#finder div:focus")[0];
-        if (selected_button != "undefined" && status != "delete") {
-            var source = selected_button.getAttribute('data-content');
-
-
-            var finder = new Applait.Finder({ type: "sdcard", debugMode: false });
-            finder.search(source);
-
-            finder.on("fileFound", function(file, fileinfo, storageName) {
-                var mysrc = URL.createObjectURL(file);
-                player.src = mysrc;
-                player.play();
-
-                //time duration
-                $(player).on("loadedmetadata", function() {
-
-                    setInterval(function() {
-                        var time = player.duration - player.currentTime;
-                        var minutes = parseInt(time / 60, 10);
-                        var seconds_long = parseInt(time % 60, 10);
-                        var seconds;
-                        if (seconds_long < 10) {
-                            seconds = "0" + seconds_long;
-                        } else {
-                            seconds = seconds_long;
-                        }
-                        $("div#time").text(minutes + ":" + seconds);
-
-
-                    }, 1000);
-
-
-                });
-
-                player.ondurationchange = function() {
-                    setTimeout(function() {
-                        $("div#time").css("opacity", "1");
-                    }, 2000);
-                };
-
-                $('div.items').removeClass('active')
-                $(selected_button).addClass('active')
-
-                URL.revokeObjectURL(file);
-
-            })
-
-
-        }
-
-        $('div.items').removeClass('active')
-        $("div#finder div#app-list div.items").css("background", "black");
-        $("div#finder div#app-list div.items").css("color", "white");
-        $("div#finder div#app-list div.items:focus").css("color", "black!Important");
-        $("div#finder div#app-list div.items:focus").css("background", "white!Important");
-        $(selected_button).addClass('active')
-
-    }
-
-
-
-
-
 
     ////SEEKING//////
 
@@ -832,18 +702,9 @@ $(document).ready(function() {
 
         }
         player.play();
-        //player.muted=false;
-
     }
 
 
-
-
-
-    function player_seeking_run() {
-        player.muted = true;
-        player.volume = 0;
-    }
 
 
 
@@ -854,6 +715,7 @@ $(document).ready(function() {
         if (player.paused && player.currentTime > 0 && !player.ended) {
             player.play();
         } else {
+            localStorage.setItem('last_played_sound_timestamp', player.currentTime);
             player.pause();
         }
     }
@@ -1105,7 +967,7 @@ $(document).ready(function() {
         switch (evt.key) {
             case 'Enter':
                 clearInterval(key_time);
-                dev_play_sound();
+                play_sound();
                 break;
         }
     }
@@ -1123,7 +985,7 @@ $(document).ready(function() {
                 break;
 
             case '0':
-                read_metadata();
+                player.fastSeek(1);
                 break;
 
             case '1':
@@ -1133,8 +995,6 @@ $(document).ready(function() {
             case '3':
                 $("div.last-played").focus();
                 break
-
-
 
             case '4':
                 play_playlist(0)
@@ -1150,14 +1010,9 @@ $(document).ready(function() {
                 break;
 
 
-            case '7':
+            case '9':
                 read_json();
                 break;
-
-            case '8':
-                read_metadata()
-                break;
-
 
             case 'ArrowDown':
                 nav("+1")
@@ -1181,7 +1036,6 @@ $(document).ready(function() {
 
             case 'SoftRight':
                 button_soft_right()
-
                 break;
 
             case 'SoftLeft':
@@ -1189,7 +1043,6 @@ $(document).ready(function() {
                 break;
 
             case 'Backspace':
-                close.window()
                 break;
 
 
@@ -1199,15 +1052,15 @@ $(document).ready(function() {
 
 
 
+    ///////////////////////////
+    //INIT
+    ///////////////////////////
 
-
-
-
+    finder();
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
     player.addEventListener('ended', player_ended);
-    //player.addEventListener('seeking', player_seeking_run);
 
 
 

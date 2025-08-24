@@ -6,6 +6,7 @@ audio player and podcast downloader
 
 ### Manual
 + **Cursor up/down** file navigation 
++ **Cursor left/right** seeking
 + **Enter** play selected file
 + **Enter long press** delete selected file
 + **Soft-key-left** pause
@@ -15,10 +16,11 @@ audio player and podcast downloader
 + **key 5** jump to next folder
 + **key 2** jump to previous folder
 + **key 3** jump to last played track 
-+ **key 7** download podcasts
++ **key 9** download podcasts
++ **key 0** seek to start
 
 ### Podcast downloader
-Put on your sd card a file with the name `audio.json` with the following structure:
+Put on your sd card a file with the name `config.json` with the following structure:
 
 
 ```

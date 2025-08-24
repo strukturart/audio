@@ -5,7 +5,7 @@
   "launch_path": "/index.html",
   "type": "certified",
 
-
+  "origin": "app://audio.strukturart.com",
   "icons": {
     "56": "/icons/icon-56-56.png",
     "112": "/icons/icon-112-112.png"
